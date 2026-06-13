@@ -378,8 +378,10 @@
     // Bot tomonidan: ?closed=35&open=10 kabi uzatiladi
     // ════════════════════════════════════════════════
     const params = new URLSearchParams(window.location.search);
-    const CLOSED_COUNT = Math.max(0, parseInt(params.get('closed')) || 35);
-    const OPEN_COUNT   = Math.max(0, parseInt(params.get('open'))   || 10);
+    const _c = parseInt(params.get('closed'));
+    const _o = parseInt(params.get('open'));
+    const CLOSED_COUNT = Math.max(0, isNaN(_c) ? 35 : _c);
+    const OPEN_COUNT   = Math.max(0, isNaN(_o) ? 10 : _o);
     const TOTAL        = CLOSED_COUNT + OPEN_COUNT;
 
     // Section ko'rinishini va sarlavhasini sozlash
