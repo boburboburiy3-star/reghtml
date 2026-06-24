@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="uz">
 <head>
@@ -13,6 +12,7 @@
             --tg-theme-text: var(--tg-theme-text-color, #222);
             --card-bg: var(--tg-theme-secondary-bg-color, #ffffff);
             --primary: #248bcf;
+            --kb-height: 0px; /* JS tomonidan yangilanadi */
         }
         * { box-sizing: border-box; }
         body {
@@ -20,7 +20,8 @@
             background-color: var(--tg-theme-bg);
             color: var(--tg-theme-text);
             margin: 0; padding: 15px;
-            padding-bottom: 80px;
+            padding-bottom: calc(80px + var(--kb-height));
+            transition: padding-bottom 0.25s ease;
         }
         .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid rgba(0,0,0,0.05); padding-bottom: 15px; }
         .header h2 { margin: 0; color: var(--primary); }
@@ -41,7 +42,7 @@
             min-height: 52px; display: block;
         }
         math-field:focus-within { border-color: var(--primary); }
-        .submit-container { text-align: center; margin-top: 30px; margin-bottom: 50px; }
+        .submit-container { text-align: center; margin-top: 30px; margin-bottom: 20px; }
         .btn-submit {
             width: 100%; max-width: 400px; background: var(--primary); color: white;
             border: none; padding: 15px; border-radius: 10px; font-size: 16px;
@@ -89,6 +90,7 @@
         .kb-btn.gray   { background: #48484a; }
         .kb-btn.wide { flex: 1.5; }
         .kb-btn.del  { background: #5a1a1a; font-size: 18px; }
+        .kb-btn.clr  { background: #7a1a1a; font-size: 11px; font-weight: 700; line-height: 1.2; }
     </style>
 </head>
 <body>
@@ -128,7 +130,8 @@
             <button class="kb-btn gray" onclick="ins('4')">4</button>
             <button class="kb-btn gray" onclick="ins('5')">5</button>
             <button class="kb-btn gray" onclick="ins('6')">6</button>
-            <button class="kb-btn del wide" onclick="kbDel()">⌫</button>
+            <button class="kb-btn del" onclick="kbDel()">⌫</button>
+            <button class="kb-btn clr" onclick="kbClear()">🗑<br>Tozala</button>
         </div>
         <div class="kb-row">
             <button class="kb-btn gray" onclick="ins('1')">1</button>
@@ -189,6 +192,7 @@
             <button class="kb-btn blue" onclick="ins('\\sec(\\placeholder{})')">sec<br><small>(□)</small></button>
             <button class="kb-btn blue" onclick="ins('\\csc(\\placeholder{})')">csc<br><small>(□)</small></button>
             <button class="kb-btn del" onclick="kbDel()">⌫</button>
+            <button class="kb-btn clr" onclick="kbClear()">🗑<br>Tozala</button>
         </div>
         <div class="kb-row">
             <button class="kb-btn orange" onclick="ins('\\sin^{-1}(\\placeholder{})')">sin⁻¹<br><small>(□)</small></button>
@@ -236,6 +240,7 @@
             <button class="kb-btn purple" onclick="ins('\\epsilon')">ε</button>
             <button class="kb-btn purple" onclick="ins('\\zeta')">ζ</button>
             <button class="kb-btn del" onclick="kbDel()">⌫</button>
+            <button class="kb-btn clr" onclick="kbClear()">🗑<br>Tozala</button>
         </div>
         <div class="kb-row">
             <button class="kb-btn purple" onclick="ins('\\eta')">η</button>
@@ -283,6 +288,7 @@
             <button class="kb-btn green" onclick="ins('e')">e</button>
             <button class="kb-btn green" onclick="ins('f')">f</button>
             <button class="kb-btn del" onclick="kbDel()">⌫</button>
+            <button class="kb-btn clr" onclick="kbClear()">🗑<br>Tozala</button>
         </div>
         <div class="kb-row">
             <button class="kb-btn green" onclick="ins('g')">g</button>
@@ -330,6 +336,7 @@
             <button class="kb-btn" onclick="ins('\\oint')">∮</button>
             <button class="kb-btn" onclick="ins('\\partial')">∂</button>
             <button class="kb-btn del" onclick="kbDel()">⌫</button>
+            <button class="kb-btn clr" onclick="kbClear()">🗑<br>Tozala</button>
         </div>
         <div class="kb-row">
             <button class="kb-btn blue" onclick="ins('\\leq')">≤</button>
@@ -376,7 +383,6 @@
 
     // ════════════════════════════════════════════════
     // URL parametrlardan savollar sonini o'qish
-    // Bot tomonidan: ?closed=35&open=10 kabi uzatiladi
     // ════════════════════════════════════════════════
     const params = new URLSearchParams(window.location.search);
     const _c = parseInt(params.get('closed'));
@@ -385,7 +391,6 @@
     const OPEN_COUNT   = Math.max(0, isNaN(_o) ? 10 : _o);
     const TOTAL        = CLOSED_COUNT + OPEN_COUNT;
 
-    // Section ko'rinishini va sarlavhasini sozlash
     if (CLOSED_COUNT === 0) {
         document.getElementById('closed-section').style.display = 'none';
     } else {
@@ -399,10 +404,10 @@
         const openStart = CLOSED_COUNT + 1;
         const part = CLOSED_COUNT > 0 ? 'II' : 'I';
         document.getElementById('open-title').textContent =
-            `${part} Qism. Matematik ochiq savollar (${openStart}\u2013${TOTAL})`;
+            `${part} Qism. Ochiq savollar (${openStart}\u2013${TOTAL})`;
     }
 
-    // ── Yopiq savollar (A/B/C/D) — dinamik generatsiya ──
+    // ── Yopiq savollar (A/B/C/D) ──
     const closedContainer = document.getElementById('closed-container');
     for (let i = 1; i <= CLOSED_COUNT; i++) {
         const card = document.createElement('div');
@@ -418,7 +423,7 @@
         closedContainer.appendChild(card);
     }
 
-    // ── Ochiq savollar (math-field) — dinamik generatsiya ──
+    // ── Ochiq savollar (math-field) ──
     const openContainer = document.getElementById('open-container');
     const openMfIds = [];
     for (let i = 0; i < OPEN_COUNT; i++) {
@@ -433,59 +438,116 @@
         openContainer.appendChild(card);
     }
 
-    // ── Klaviatura ──
+    // ════════════════════════════════════════════════
+    // SCROLL YECHIMI: 1-yechim + 4-yechim
+    // ════════════════════════════════════════════════
+    const kb = document.getElementById('custom-kb');
+    let activeMf = null;
+    let kbVisible = false;
+
+    // Klaviatura balandligini body padding'ga qo'shish
+    function updateBodyPadding(kbHeight) {
+        document.documentElement.style.setProperty('--kb-height', kbHeight + 'px');
+    }
+
+    // Faol math-field'ni klaviatura ustida ko'rsatish
+    function scrollToActiveMf() {
+        if (!activeMf) return;
+        const kbHeight = kb.offsetHeight;
+        const rect = activeMf.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const safeBottom = viewportHeight - kbHeight - 16; // 16px qo'shimcha bo'shliq
+
+        if (rect.bottom > safeBottom) {
+            const scrollAmount = rect.bottom - safeBottom;
+            window.scrollBy({ top: scrollAmount, behavior: 'smooth' });
+        }
+    }
+
+    // Klaviaturani ko'rsatish
+    function showKb() {
+        if (kbVisible) return;
+        kb.classList.add('visible');
+        kbVisible = true;
+        // Balandlik o'lchovini keyingi frame'ga kechiktir (render tugagandan so'ng)
+        requestAnimationFrame(() => {
+            updateBodyPadding(kb.offsetHeight);
+            // Scroll qilishni biroz kechiktir — padding qo'shilgandan keyin
+            setTimeout(scrollToActiveMf, 150);
+        });
+    }
+
+    // Klaviaturani yashirish
+    function hideKb() {
+        if (!kbVisible) return;
+        kb.classList.remove('visible');
+        kbVisible = false;
+        updateBodyPadding(0);
+        activeMf = null;
+    }
+
+    // ── 4-yechim: Telegram viewportChanged event ──
+    // Telegram viewport o'zgarganda (masalan, sistema klaviaturasi chiqsa ham)
+    // biz ham o'z klaviaturamizni qayta joylashtirамiz
+    tg.onEvent('viewportChanged', function(eventData) {
+        if (kbVisible && activeMf) {
+            // Viewport o'zgarishi tugagandan so'ng scroll ni qayta hisoblash
+            setTimeout(scrollToActiveMf, 200);
+        }
+    });
+
+    // ── Klaviatura tab almashtirish ──
     function switchTab(idx) {
         document.querySelectorAll('.kb-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
         document.querySelectorAll('.kb-panel').forEach((p, i) => p.classList.toggle('active', i === idx));
     }
 
-    let activeMf = null;
-    const kb = document.getElementById('custom-kb');
-
+    // ── Math-field'larni ishga tushirish ──
     function initMathFields() {
         openMfIds.forEach(id => {
             const mf = document.getElementById(id);
             if (!mf) return;
             mf.mathVirtualKeyboardPolicy = 'off';
+
             mf.addEventListener('focusin', () => {
                 activeMf = mf;
-                kb.classList.add('visible');
-                setTimeout(() => {
-                    const kbHeight = kb.offsetHeight;
-                    const rect = mf.getBoundingClientRect();
-                    const visibleBottom = window.innerHeight - kbHeight;
-                    if (rect.bottom > visibleBottom) {
-                        window.scrollBy({ top: rect.bottom - visibleBottom + 10, behavior: 'smooth' });
-                    }
-                }, 300);
+                showKb();
             });
         });
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => customElements.whenDefined('math-field').then(initMathFields));
+        document.addEventListener('DOMContentLoaded', () =>
+            customElements.whenDefined('math-field').then(initMathFields)
+        );
     } else {
         customElements.whenDefined('math-field').then(initMathFields);
     }
 
+    // Klaviatura tashqarisiga bosilganda yashirish
     document.addEventListener('pointerdown', (e) => {
         if (kb.contains(e.target)) return;
-        if (!e.target.closest('math-field')) {
-            kb.classList.remove('visible');
-            activeMf = null;
-        }
+        if (e.target.closest('math-field')) return;
+        hideKb();
     });
 
+    // ── Klaviatura tugmalari ──
     function ins(latex) {
         if (!activeMf) return;
-        activeMf.focus();
-        activeMf.executeCommand(['insert', latex, { insertionMode: 'replaceSelection', selectionMode: 'placeholder' }]);
+        activeMf.executeCommand(['insert', latex, {
+            insertionMode: 'replaceSelection',
+            selectionMode: 'placeholder'
+        }]);
     }
 
     function kbDel() {
         if (!activeMf) return;
-        activeMf.focus();
         activeMf.executeCommand('deleteBackward');
+    }
+
+    function kbClear() {
+        if (!activeMf) return;
+        activeMf.setValue('');
     }
 
     // ── Javoblarni yuborish ──
@@ -494,8 +556,18 @@
         for (let i = 1; i <= CLOSED_COUNT; i++) {
             if (!document.querySelector(`input[name="q_${i}"]:checked`)) emptyCount++;
         }
-        if (emptyCount > 0) {
-            const ok = confirm(`⚠️ ${emptyCount} ta savol javobsiz qolgan!\n\nBaribir yuborasizmi?`);
+
+        let emptyOpenCount = 0;
+        openMfIds.forEach(id => {
+            const mf = document.getElementById(id);
+            if (!mf || !mf.value || !mf.value.trim()) emptyOpenCount++;
+        });
+
+        if (emptyCount > 0 || emptyOpenCount > 0) {
+            const parts = [];
+            if (emptyCount > 0) parts.push(`${emptyCount} ta variantli savol`);
+            if (emptyOpenCount > 0) parts.push(`${emptyOpenCount} ta ochiq savol`);
+            const ok = confirm(`⚠️ ${parts.join(' va ')} javobsiz qolgan!\n\nBaribir yuborasizmi?`);
             if (!ok) return;
         }
 
