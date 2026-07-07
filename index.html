@@ -12,7 +12,7 @@
             --tg-theme-text: var(--tg-theme-text-color, #222);
             --card-bg: var(--tg-theme-secondary-bg-color, #ffffff);
             --primary: #248bcf;
-            --kb-height: 0px; /* JS tomonidan yangilanadi */
+            --kb-height: 0px;
         }
         * { box-sizing: border-box; }
         body {
@@ -42,6 +42,27 @@
             min-height: 52px; display: block;
         }
         math-field:focus-within { border-color: var(--primary); }
+
+        /* Matn rejimi input */
+        .text-answer {
+            width: 100%; font-size: 17px; border: 2px solid #ccc; border-radius: 8px;
+            padding: 13px 12px; background: white; color: black; outline: none;
+            display: none; font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        .text-answer:focus { border-color: var(--primary); }
+
+        /* Rejim almashtirish tugmalari */
+        .mode-toggle { display: flex; gap: 7px; margin-bottom: 10px; }
+        .mode-btn {
+            flex: 1; padding: 8px 0; font-size: 12px; font-weight: 700;
+            border: 1.5px solid #ccc; border-radius: 8px;
+            background: rgba(0,0,0,0.03); color: #777; cursor: pointer;
+            user-select: none; -webkit-tap-highlight-color: transparent;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+        }
+        .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
         .submit-container { text-align: center; margin-top: 30px; margin-bottom: 20px; }
         .btn-submit {
             width: 100%; max-width: 400px; background: var(--primary); color: white;
@@ -49,12 +70,11 @@
             font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(36,139,207,0.3);
         }
 
+        /* Maxsus klaviatura */
         #custom-kb {
-            display: none;
-            position: fixed;
+            display: none; position: fixed;
             bottom: 0; left: 0; right: 0;
-            background: #1c1c1e;
-            z-index: 9999;
+            background: #1c1c1e; z-index: 9999;
             box-shadow: 0 -4px 24px rgba(0,0,0,0.5);
         }
         #custom-kb.visible { display: block; }
@@ -88,9 +108,9 @@
         .kb-btn.purple { background: #5b3a8a; }
         .kb-btn.orange { background: #8a4f1a; }
         .kb-btn.gray   { background: #48484a; }
-        .kb-btn.wide { flex: 1.5; }
-        .kb-btn.del  { background: #5a1a1a; font-size: 18px; }
-        .kb-btn.clr  { background: #7a1a1a; font-size: 11px; font-weight: 700; line-height: 1.2; }
+        .kb-btn.wide   { flex: 1.5; }
+        .kb-btn.del    { background: #5a1a1a; font-size: 18px; }
+        .kb-btn.clr    { background: #7a1a1a; font-size: 11px; font-weight: 700; line-height: 1.2; }
     </style>
 </head>
 <body>
@@ -111,17 +131,20 @@
 </div>
 
 <div class="submit-container">
-    <button class="btn-submit" onclick="sendAllAnswers()">📥 IMTIHONNI YAKUNLASH</button>
+    <button class="btn-submit" onclick="sendAllAnswers()">&#128229; IMTIHONNI YAKUNLASH</button>
 </div>
 
+<!-- MAXSUS KLAVIATURA -->
 <div id="custom-kb">
     <div class="kb-tabs">
         <div class="kb-tab active" onclick="switchTab(0)">123 Asosiy</div>
         <div class="kb-tab" onclick="switchTab(1)">f(x) Funks.</div>
-        <div class="kb-tab" onclick="switchTab(2)">αβγ Grek</div>
+        <div class="kb-tab" onclick="switchTab(2)">&#945;&#946;&#947; Grek</div>
         <div class="kb-tab" onclick="switchTab(3)">ABC Latin</div>
-        <div class="kb-tab" onclick="switchTab(4)">∑ Operator</div>
+        <div class="kb-tab" onclick="switchTab(4)">&#8721; Operator</div>
     </div>
+
+    <!-- Panel 0: Asosiy -->
     <div class="kb-panel active" id="panel-0">
         <div class="kb-row">
             <button class="kb-btn gray" onclick="ins('7')">7</button>
@@ -130,8 +153,8 @@
             <button class="kb-btn gray" onclick="ins('4')">4</button>
             <button class="kb-btn gray" onclick="ins('5')">5</button>
             <button class="kb-btn gray" onclick="ins('6')">6</button>
-            <button class="kb-btn del" onclick="kbDel()">⌫</button>
-            <button class="kb-btn clr" onclick="kbClear()">🗑<br>Tozala</button>
+            <button class="kb-btn del" onclick="kbDel()">&#9003;</button>
+            <button class="kb-btn clr" onclick="kbClear()">&#128465;<br>Tozala</button>
         </div>
         <div class="kb-row">
             <button class="kb-btn gray" onclick="ins('1')">1</button>
@@ -144,12 +167,12 @@
         </div>
         <div class="kb-row">
             <button class="kb-btn" onclick="ins('+')">+</button>
-            <button class="kb-btn" onclick="ins('-')">−</button>
-            <button class="kb-btn" onclick="ins('\\times')">×</button>
-            <button class="kb-btn" onclick="ins('\\div')">÷</button>
+            <button class="kb-btn" onclick="ins('-')">&#8722;</button>
+            <button class="kb-btn" onclick="ins('\\times')">&#215;</button>
+            <button class="kb-btn" onclick="ins('\\div')">&#247;</button>
             <button class="kb-btn" onclick="ins('(')"> ( </button>
             <button class="kb-btn" onclick="ins(')')"> ) </button>
-            <button class="kb-btn blue" onclick="ins('\\pm')">±</button>
+            <button class="kb-btn blue" onclick="ins('\\pm')">&#177;</button>
         </div>
         <div class="kb-row">
             <button class="kb-btn blue" onclick="ins('\\frac{\\placeholder{}}{\\placeholder{}}')">
@@ -159,16 +182,16 @@
                 </span>
             </button>
             <button class="kb-btn blue" onclick="ins('{\\placeholder{}}^{\\placeholder{}}')">
-                <span style="display:flex;align-items:flex-start;line-height:1"><span style="font-size:14px">x</span><span style="font-size:9px;margin-top:1px">□</span></span>
+                <span style="display:flex;align-items:flex-start;line-height:1"><span style="font-size:14px">x</span><span style="font-size:9px;margin-top:1px">&#9633;</span></span>
             </button>
             <button class="kb-btn blue" onclick="ins('{\\placeholder{}}_{\\placeholder{}}')">
-                <span style="display:flex;align-items:flex-end;line-height:1"><span style="font-size:14px">x</span><span style="font-size:9px;margin-bottom:1px">□</span></span>
+                <span style="display:flex;align-items:flex-end;line-height:1"><span style="font-size:14px">x</span><span style="font-size:9px;margin-bottom:1px">&#9633;</span></span>
             </button>
             <button class="kb-btn blue" onclick="ins('\\sqrt{\\placeholder{}}')">
-                <span style="display:inline-flex;align-items:center;line-height:1"><span style="font-size:18px;line-height:1">√</span><span style="font-size:11px;border-top:1.5px solid white;border-right:1.5px solid white;padding:1px 4px;margin-left:1px">□</span></span>
+                <span style="display:inline-flex;align-items:center;line-height:1"><span style="font-size:18px;line-height:1">&#8730;</span><span style="font-size:11px;border-top:1.5px solid white;border-right:1.5px solid white;padding:1px 4px;margin-left:1px">&#9633;</span></span>
             </button>
             <button class="kb-btn blue" onclick="ins('\\sqrt[\\placeholder{}]{\\placeholder{}}')">
-                <span style="display:inline-flex;align-items:center;line-height:1"><span style="font-size:9px;align-self:flex-start;margin-top:1px">n</span><span style="font-size:16px;line-height:1">√</span><span style="font-size:11px;border-top:1.5px solid white;border-right:1.5px solid white;padding:1px 4px;margin-left:1px">□</span></span>
+                <span style="display:inline-flex;align-items:center;line-height:1"><span style="font-size:9px;align-self:flex-start;margin-top:1px">n</span><span style="font-size:16px;line-height:1">&#8730;</span><span style="font-size:11px;border-top:1.5px solid white;border-right:1.5px solid white;padding:1px 4px;margin-left:1px">&#9633;</span></span>
             </button>
             <button class="kb-btn green" onclick="ins('x')">x</button>
             <button class="kb-btn green" onclick="ins('y')">y</button>
@@ -177,49 +200,51 @@
             <button class="kb-btn green" onclick="ins('n')">n</button>
             <button class="kb-btn green" onclick="ins('a')">a</button>
             <button class="kb-btn green" onclick="ins('b')">b</button>
-            <button class="kb-btn purple" onclick="ins('\\pi')">π</button>
+            <button class="kb-btn purple" onclick="ins('\\pi')">&#960;</button>
             <button class="kb-btn purple" onclick="ins('e')">e</button>
-            <button class="kb-btn" onclick="ins('\\infty')">∞</button>
+            <button class="kb-btn" onclick="ins('\\infty')">&#8734;</button>
             <button class="kb-btn" onclick="ins('%')">%</button>
         </div>
     </div>
+
+    <!-- Panel 1: Funksiyalar -->
     <div class="kb-panel" id="panel-1">
         <div class="kb-row">
-            <button class="kb-btn blue" onclick="ins('\\sin(\\placeholder{})')">sin<br><small>(□)</small></button>
-            <button class="kb-btn blue" onclick="ins('\\cos(\\placeholder{})')">cos<br><small>(□)</small></button>
-            <button class="kb-btn blue" onclick="ins('\\tan(\\placeholder{})')">tan<br><small>(□)</small></button>
-            <button class="kb-btn blue" onclick="ins('\\cot(\\placeholder{})')">cot<br><small>(□)</small></button>
-            <button class="kb-btn blue" onclick="ins('\\sec(\\placeholder{})')">sec<br><small>(□)</small></button>
-            <button class="kb-btn blue" onclick="ins('\\csc(\\placeholder{})')">csc<br><small>(□)</small></button>
-            <button class="kb-btn del" onclick="kbDel()">⌫</button>
-            <button class="kb-btn clr" onclick="kbClear()">🗑<br>Tozala</button>
+            <button class="kb-btn blue" onclick="ins('\\sin(\\placeholder{})')">sin<br><small>(&#9633;)</small></button>
+            <button class="kb-btn blue" onclick="ins('\\cos(\\placeholder{})')">cos<br><small>(&#9633;)</small></button>
+            <button class="kb-btn blue" onclick="ins('\\tan(\\placeholder{})')">tan<br><small>(&#9633;)</small></button>
+            <button class="kb-btn blue" onclick="ins('\\cot(\\placeholder{})')">cot<br><small>(&#9633;)</small></button>
+            <button class="kb-btn blue" onclick="ins('\\sec(\\placeholder{})')">sec<br><small>(&#9633;)</small></button>
+            <button class="kb-btn blue" onclick="ins('\\csc(\\placeholder{})')">csc<br><small>(&#9633;)</small></button>
+            <button class="kb-btn del" onclick="kbDel()">&#9003;</button>
+            <button class="kb-btn clr" onclick="kbClear()">&#128465;<br>Tozala</button>
         </div>
         <div class="kb-row">
-            <button class="kb-btn orange" onclick="ins('\\sin^{-1}(\\placeholder{})')">sin⁻¹<br><small>(□)</small></button>
-            <button class="kb-btn orange" onclick="ins('\\cos^{-1}(\\placeholder{})')">cos⁻¹<br><small>(□)</small></button>
-            <button class="kb-btn orange" onclick="ins('\\tan^{-1}(\\placeholder{})')">tan⁻¹<br><small>(□)</small></button>
-            <button class="kb-btn orange" onclick="ins('\\cot^{-1}(\\placeholder{})')">cot⁻¹<br><small>(□)</small></button>
+            <button class="kb-btn orange" onclick="ins('\\sin^{-1}(\\placeholder{})')">sin&#8315;&#185;<br><small>(&#9633;)</small></button>
+            <button class="kb-btn orange" onclick="ins('\\cos^{-1}(\\placeholder{})')">cos&#8315;&#185;<br><small>(&#9633;)</small></button>
+            <button class="kb-btn orange" onclick="ins('\\tan^{-1}(\\placeholder{})')">tan&#8315;&#185;<br><small>(&#9633;)</small></button>
+            <button class="kb-btn orange" onclick="ins('\\cot^{-1}(\\placeholder{})')">cot&#8315;&#185;<br><small>(&#9633;)</small></button>
             <button class="kb-btn" onclick="ins('\\sinh(\\placeholder{})')">sinh</button>
             <button class="kb-btn" onclick="ins('\\cosh(\\placeholder{})')">cosh</button>
             <button class="kb-btn" onclick="ins('\\tanh(\\placeholder{})')">tanh</button>
         </div>
         <div class="kb-row">
-            <button class="kb-btn green" onclick="ins('\\log_{\\placeholder{}}(\\placeholder{})')">log<sub>□</sub><br><small>(□)</small></button>
-            <button class="kb-btn green" onclick="ins('\\log(\\placeholder{})')">log<br><small>(□)</small></button>
-            <button class="kb-btn green" onclick="ins('\\ln(\\placeholder{})')">ln<br><small>(□)</small></button>
-            <button class="kb-btn green" onclick="ins('\\log_{10}(\\placeholder{})')">lg<br><small>(□)</small></button>
-            <button class="kb-btn blue" onclick="ins('\\sqrt{\\placeholder{}}')">√□</button>
-            <button class="kb-btn blue" onclick="ins('\\sqrt[\\placeholder{}]{\\placeholder{}}')"><sup>n</sup>√□</button>
-            <button class="kb-btn blue" onclick="ins('|\\placeholder{}|')">|□|</button>
+            <button class="kb-btn green" onclick="ins('\\log_{\\placeholder{}}(\\placeholder{})')">log<sub>&#9633;</sub><br><small>(&#9633;)</small></button>
+            <button class="kb-btn green" onclick="ins('\\log(\\placeholder{})')">log<br><small>(&#9633;)</small></button>
+            <button class="kb-btn green" onclick="ins('\\ln(\\placeholder{})')">ln<br><small>(&#9633;)</small></button>
+            <button class="kb-btn green" onclick="ins('\\log_{10}(\\placeholder{})')">lg<br><small>(&#9633;)</small></button>
+            <button class="kb-btn blue" onclick="ins('\\sqrt{\\placeholder{}}')">&#8730;&#9633;</button>
+            <button class="kb-btn blue" onclick="ins('\\sqrt[\\placeholder{}]{\\placeholder{}}')"><sup>n</sup>&#8730;&#9633;</button>
+            <button class="kb-btn blue" onclick="ins('|\\placeholder{}|')">|&#9633;|</button>
         </div>
         <div class="kb-row">
-            <button class="kb-btn" onclick="ins('\\lim_{\\placeholder{} \\to \\placeholder{}}')">lim<sub>□→□</sub></button>
-            <button class="kb-btn" onclick="ins('\\lim_{\\placeholder{} \\to \\infty}')">lim<sub>∞</sub></button>
+            <button class="kb-btn" onclick="ins('\\lim_{\\placeholder{} \\to \\placeholder{}}')">lim<sub>&#9633;&#8594;&#9633;</sub></button>
+            <button class="kb-btn" onclick="ins('\\lim_{\\placeholder{} \\to \\infty}')">lim<sub>&#8734;</sub></button>
             <button class="kb-btn" onclick="ins('\\max(\\placeholder{})')">max</button>
             <button class="kb-btn" onclick="ins('\\min(\\placeholder{})')">min</button>
             <button class="kb-btn" onclick="ins('\\gcd(\\placeholder{},\\placeholder{})')">gcd</button>
             <button class="kb-btn" onclick="ins('\\lcm(\\placeholder{},\\placeholder{})')">lcm</button>
-            <button class="kb-btn purple" onclick="ins('e^{\\placeholder{}}')">e<sup>□</sup></button>
+            <button class="kb-btn purple" onclick="ins('e^{\\placeholder{}}')">e<sup>&#9633;</sup></button>
         </div>
         <div class="kb-row">
             <button class="kb-btn" onclick="ins('(')"> ( </button>
@@ -231,54 +256,58 @@
             <button class="kb-btn gray" onclick="ins('=')">=</button>
         </div>
     </div>
+
+    <!-- Panel 2: Grek harflari -->
     <div class="kb-panel" id="panel-2">
         <div class="kb-row">
-            <button class="kb-btn purple" onclick="ins('\\alpha')">α</button>
-            <button class="kb-btn purple" onclick="ins('\\beta')">β</button>
-            <button class="kb-btn purple" onclick="ins('\\gamma')">γ</button>
-            <button class="kb-btn purple" onclick="ins('\\delta')">δ</button>
-            <button class="kb-btn purple" onclick="ins('\\epsilon')">ε</button>
-            <button class="kb-btn purple" onclick="ins('\\zeta')">ζ</button>
-            <button class="kb-btn del" onclick="kbDel()">⌫</button>
-            <button class="kb-btn clr" onclick="kbClear()">🗑<br>Tozala</button>
+            <button class="kb-btn purple" onclick="ins('\\alpha')">&#945;</button>
+            <button class="kb-btn purple" onclick="ins('\\beta')">&#946;</button>
+            <button class="kb-btn purple" onclick="ins('\\gamma')">&#947;</button>
+            <button class="kb-btn purple" onclick="ins('\\delta')">&#948;</button>
+            <button class="kb-btn purple" onclick="ins('\\epsilon')">&#949;</button>
+            <button class="kb-btn purple" onclick="ins('\\zeta')">&#950;</button>
+            <button class="kb-btn del" onclick="kbDel()">&#9003;</button>
+            <button class="kb-btn clr" onclick="kbClear()">&#128465;<br>Tozala</button>
         </div>
         <div class="kb-row">
-            <button class="kb-btn purple" onclick="ins('\\eta')">η</button>
-            <button class="kb-btn purple" onclick="ins('\\theta')">θ</button>
-            <button class="kb-btn purple" onclick="ins('\\iota')">ι</button>
-            <button class="kb-btn purple" onclick="ins('\\kappa')">κ</button>
-            <button class="kb-btn purple" onclick="ins('\\lambda')">λ</button>
-            <button class="kb-btn purple" onclick="ins('\\mu')">μ</button>
-            <button class="kb-btn purple" onclick="ins('\\nu')">ν</button>
+            <button class="kb-btn purple" onclick="ins('\\eta')">&#951;</button>
+            <button class="kb-btn purple" onclick="ins('\\theta')">&#952;</button>
+            <button class="kb-btn purple" onclick="ins('\\iota')">&#953;</button>
+            <button class="kb-btn purple" onclick="ins('\\kappa')">&#954;</button>
+            <button class="kb-btn purple" onclick="ins('\\lambda')">&#955;</button>
+            <button class="kb-btn purple" onclick="ins('\\mu')">&#956;</button>
+            <button class="kb-btn purple" onclick="ins('\\nu')">&#957;</button>
         </div>
         <div class="kb-row">
-            <button class="kb-btn purple" onclick="ins('\\xi')">ξ</button>
-            <button class="kb-btn purple" onclick="ins('\\pi')">π</button>
-            <button class="kb-btn purple" onclick="ins('\\rho')">ρ</button>
-            <button class="kb-btn purple" onclick="ins('\\sigma')">σ</button>
-            <button class="kb-btn purple" onclick="ins('\\tau')">τ</button>
-            <button class="kb-btn purple" onclick="ins('\\upsilon')">υ</button>
-            <button class="kb-btn purple" onclick="ins('\\phi')">φ</button>
+            <button class="kb-btn purple" onclick="ins('\\xi')">&#958;</button>
+            <button class="kb-btn purple" onclick="ins('\\pi')">&#960;</button>
+            <button class="kb-btn purple" onclick="ins('\\rho')">&#961;</button>
+            <button class="kb-btn purple" onclick="ins('\\sigma')">&#963;</button>
+            <button class="kb-btn purple" onclick="ins('\\tau')">&#964;</button>
+            <button class="kb-btn purple" onclick="ins('\\upsilon')">&#965;</button>
+            <button class="kb-btn purple" onclick="ins('\\phi')">&#966;</button>
         </div>
         <div class="kb-row">
-            <button class="kb-btn purple" onclick="ins('\\chi')">χ</button>
-            <button class="kb-btn purple" onclick="ins('\\psi')">ψ</button>
-            <button class="kb-btn purple" onclick="ins('\\omega')">ω</button>
-            <button class="kb-btn orange" onclick="ins('\\Gamma')">Γ</button>
-            <button class="kb-btn orange" onclick="ins('\\Delta')">Δ</button>
-            <button class="kb-btn orange" onclick="ins('\\Theta')">Θ</button>
-            <button class="kb-btn orange" onclick="ins('\\Lambda')">Λ</button>
+            <button class="kb-btn purple" onclick="ins('\\chi')">&#967;</button>
+            <button class="kb-btn purple" onclick="ins('\\psi')">&#968;</button>
+            <button class="kb-btn purple" onclick="ins('\\omega')">&#969;</button>
+            <button class="kb-btn orange" onclick="ins('\\Gamma')">&#915;</button>
+            <button class="kb-btn orange" onclick="ins('\\Delta')">&#916;</button>
+            <button class="kb-btn orange" onclick="ins('\\Theta')">&#920;</button>
+            <button class="kb-btn orange" onclick="ins('\\Lambda')">&#923;</button>
         </div>
         <div class="kb-row">
-            <button class="kb-btn orange" onclick="ins('\\Xi')">Ξ</button>
-            <button class="kb-btn orange" onclick="ins('\\Pi')">Π</button>
-            <button class="kb-btn orange" onclick="ins('\\Sigma')">Σ</button>
-            <button class="kb-btn orange" onclick="ins('\\Upsilon')">Υ</button>
-            <button class="kb-btn orange" onclick="ins('\\Phi')">Φ</button>
-            <button class="kb-btn orange" onclick="ins('\\Psi')">Ψ</button>
-            <button class="kb-btn orange" onclick="ins('\\Omega')">Ω</button>
+            <button class="kb-btn orange" onclick="ins('\\Xi')">&#926;</button>
+            <button class="kb-btn orange" onclick="ins('\\Pi')">&#928;</button>
+            <button class="kb-btn orange" onclick="ins('\\Sigma')">&#931;</button>
+            <button class="kb-btn orange" onclick="ins('\\Upsilon')">&#933;</button>
+            <button class="kb-btn orange" onclick="ins('\\Phi')">&#934;</button>
+            <button class="kb-btn orange" onclick="ins('\\Psi')">&#936;</button>
+            <button class="kb-btn orange" onclick="ins('\\Omega')">&#937;</button>
         </div>
     </div>
+
+    <!-- Panel 3: Latin harflari + YANGI prime tugmasi -->
     <div class="kb-panel" id="panel-3">
         <div class="kb-row">
             <button class="kb-btn green" onclick="ins('a')">a</button>
@@ -287,8 +316,8 @@
             <button class="kb-btn green" onclick="ins('d')">d</button>
             <button class="kb-btn green" onclick="ins('e')">e</button>
             <button class="kb-btn green" onclick="ins('f')">f</button>
-            <button class="kb-btn del" onclick="kbDel()">⌫</button>
-            <button class="kb-btn clr" onclick="kbClear()">🗑<br>Tozala</button>
+            <button class="kb-btn del" onclick="kbDel()">&#9003;</button>
+            <button class="kb-btn clr" onclick="kbClear()">&#128465;<br>Tozala</button>
         </div>
         <div class="kb-row">
             <button class="kb-btn green" onclick="ins('g')">g</button>
@@ -315,7 +344,7 @@
             <button class="kb-btn green" onclick="ins('x')">x</button>
             <button class="kb-btn green" onclick="ins('y')">y</button>
             <button class="kb-btn green" onclick="ins('z')">z</button>
-            <button class="kb-btn blue" onclick="ins('\\vec{\\placeholder{}}')">→<br><small>vektor</small></button>
+            <button class="kb-btn blue" onclick="ins('\\vec{\\placeholder{}}')">&#8594;<br><small>vektor</small></button>
         </div>
         <div class="kb-row">
             <button class="kb-btn orange" onclick="ins('A')">A</button>
@@ -325,54 +354,58 @@
             <button class="kb-btn orange" onclick="ins('F')">F</button>
             <button class="kb-btn orange" onclick="ins('M')">M</button>
             <button class="kb-btn orange" onclick="ins('N')">N</button>
+            <!-- YANGI: Prime (shtrix) tugmasi -->
+            <button class="kb-btn blue" onclick="insPrime()">&#8242;<br><small>shtrix</small></button>
         </div>
     </div>
+
+    <!-- Panel 4: Operatorlar -->
     <div class="kb-panel" id="panel-4">
         <div class="kb-row">
-            <button class="kb-btn" onclick="ins('\\sum_{\\placeholder{}}^{\\placeholder{}}')">Σ<sub>□</sub><sup>□</sup></button>
-            <button class="kb-btn" onclick="ins('\\prod_{\\placeholder{}}^{\\placeholder{}}')">Π<sub>□</sub><sup>□</sup></button>
-            <button class="kb-btn" onclick="ins('\\int_{\\placeholder{}}^{\\placeholder{}}')">∫<sub>□</sub><sup>□</sup></button>
-            <button class="kb-btn" onclick="ins('\\iint')">∬</button>
-            <button class="kb-btn" onclick="ins('\\oint')">∮</button>
-            <button class="kb-btn" onclick="ins('\\partial')">∂</button>
-            <button class="kb-btn del" onclick="kbDel()">⌫</button>
-            <button class="kb-btn clr" onclick="kbClear()">🗑<br>Tozala</button>
+            <button class="kb-btn" onclick="ins('\\sum_{\\placeholder{}}^{\\placeholder{}}')">&#931;<sub>&#9633;</sub><sup>&#9633;</sup></button>
+            <button class="kb-btn" onclick="ins('\\prod_{\\placeholder{}}^{\\placeholder{}}')">&#928;<sub>&#9633;</sub><sup>&#9633;</sup></button>
+            <button class="kb-btn" onclick="ins('\\int_{\\placeholder{}}^{\\placeholder{}}')">&#8747;<sub>&#9633;</sub><sup>&#9633;</sup></button>
+            <button class="kb-btn" onclick="ins('\\iint')">&#8748;</button>
+            <button class="kb-btn" onclick="ins('\\oint')">&#8750;</button>
+            <button class="kb-btn" onclick="ins('\\partial')">&#8706;</button>
+            <button class="kb-btn del" onclick="kbDel()">&#9003;</button>
+            <button class="kb-btn clr" onclick="kbClear()">&#128465;<br>Tozala</button>
         </div>
         <div class="kb-row">
-            <button class="kb-btn blue" onclick="ins('\\leq')">≤</button>
-            <button class="kb-btn blue" onclick="ins('\\geq')">≥</button>
-            <button class="kb-btn blue" onclick="ins('\\neq')">≠</button>
-            <button class="kb-btn blue" onclick="ins('\\approx')">≈</button>
-            <button class="kb-btn blue" onclick="ins('\\equiv')">≡</button>
+            <button class="kb-btn blue" onclick="ins('\\leq')">&#8804;</button>
+            <button class="kb-btn blue" onclick="ins('\\geq')">&#8805;</button>
+            <button class="kb-btn blue" onclick="ins('\\neq')">&#8800;</button>
+            <button class="kb-btn blue" onclick="ins('\\approx')">&#8776;</button>
+            <button class="kb-btn blue" onclick="ins('\\equiv')">&#8801;</button>
             <button class="kb-btn blue" onclick="ins('\\sim')">~</button>
-            <button class="kb-btn blue" onclick="ins('\\propto')">∝</button>
+            <button class="kb-btn blue" onclick="ins('\\propto')">&#8733;</button>
         </div>
         <div class="kb-row">
-            <button class="kb-btn green" onclick="ins('\\in')">∈</button>
-            <button class="kb-btn green" onclick="ins('\\notin')">∉</button>
-            <button class="kb-btn green" onclick="ins('\\subset')">⊂</button>
-            <button class="kb-btn green" onclick="ins('\\supset')">⊃</button>
-            <button class="kb-btn green" onclick="ins('\\cup')">∪</button>
-            <button class="kb-btn green" onclick="ins('\\cap')">∩</button>
-            <button class="kb-btn green" onclick="ins('\\emptyset')">∅</button>
+            <button class="kb-btn green" onclick="ins('\\in')">&#8712;</button>
+            <button class="kb-btn green" onclick="ins('\\notin')">&#8713;</button>
+            <button class="kb-btn green" onclick="ins('\\subset')">&#8834;</button>
+            <button class="kb-btn green" onclick="ins('\\supset')">&#8835;</button>
+            <button class="kb-btn green" onclick="ins('\\cup')">&#8746;</button>
+            <button class="kb-btn green" onclick="ins('\\cap')">&#8745;</button>
+            <button class="kb-btn green" onclick="ins('\\emptyset')">&#8709;</button>
         </div>
         <div class="kb-row">
-            <button class="kb-btn orange" onclick="ins('\\rightarrow')">→</button>
-            <button class="kb-btn orange" onclick="ins('\\leftarrow')">←</button>
-            <button class="kb-btn orange" onclick="ins('\\leftrightarrow')">↔</button>
-            <button class="kb-btn orange" onclick="ins('\\Rightarrow')">⇒</button>
-            <button class="kb-btn orange" onclick="ins('\\Leftrightarrow')">⇔</button>
-            <button class="kb-btn" onclick="ins('\\forall')">∀</button>
-            <button class="kb-btn" onclick="ins('\\exists')">∃</button>
+            <button class="kb-btn orange" onclick="ins('\\rightarrow')">&#8594;</button>
+            <button class="kb-btn orange" onclick="ins('\\leftarrow')">&#8592;</button>
+            <button class="kb-btn orange" onclick="ins('\\leftrightarrow')">&#8596;</button>
+            <button class="kb-btn orange" onclick="ins('\\Rightarrow')">&#8658;</button>
+            <button class="kb-btn orange" onclick="ins('\\Leftrightarrow')">&#8660;</button>
+            <button class="kb-btn" onclick="ins('\\forall')">&#8704;</button>
+            <button class="kb-btn" onclick="ins('\\exists')">&#8707;</button>
         </div>
         <div class="kb-row">
             <button class="kb-btn purple" onclick="ins('\\binom{\\placeholder{}}{\\placeholder{}}')">C<sub>n</sub><sup>k</sup><br><small>kombinat.</small></button>
-            <button class="kb-btn purple" onclick="ins('\\overline{\\placeholder{}}')">x̄<br><small>o'rta</small></button>
-            <button class="kb-btn purple" onclick="ins('\\hat{\\placeholder{}}')">x̂</button>
-            <button class="kb-btn purple" onclick="ins('\\dot{\\placeholder{}}')">ẋ</button>
-            <button class="kb-btn" onclick="ins('\\cdot')">·</button>
-            <button class="kb-btn" onclick="ins('\\ldots')">…</button>
-            <button class="kb-btn" onclick="ins('\\infty')">∞</button>
+            <button class="kb-btn purple" onclick="ins('\\overline{\\placeholder{}}')">x&#772;<br><small>o'rta</small></button>
+            <button class="kb-btn purple" onclick="ins('\\hat{\\placeholder{}}')">x&#770;</button>
+            <button class="kb-btn purple" onclick="ins('\\dot{\\placeholder{}}')">x&#775;</button>
+            <button class="kb-btn" onclick="ins('\\cdot')">&#183;</button>
+            <button class="kb-btn" onclick="ins('\\ldots')">&#8230;</button>
+            <button class="kb-btn" onclick="ins('\\infty')">&#8734;</button>
         </div>
     </div>
 </div>
@@ -395,7 +428,7 @@
         document.getElementById('closed-section').style.display = 'none';
     } else {
         document.getElementById('closed-title').textContent =
-           `I Qism. Variantli savollar (1–${CLOSED_COUNT})`;
+           'I Qism. Variantli savollar (1\u2013' + CLOSED_COUNT + ')';
     }
 
     if (OPEN_COUNT === 0) {
@@ -404,7 +437,7 @@
         const openStart = CLOSED_COUNT + 1;
         const part = CLOSED_COUNT > 0 ? 'II' : 'I';
         document.getElementById('open-title').textContent =
-            `${part} Qism. Ochiq savollar (${openStart}\u2013${TOTAL})`;
+            part + ' Qism. Ochiq savollar (' + openStart + '\u2013' + TOTAL + ')';
     }
 
     // ── Yopiq savollar (A/B/C/D) ──
@@ -412,72 +445,126 @@
     for (let i = 1; i <= CLOSED_COUNT; i++) {
         const card = document.createElement('div');
         card.className = 'q-card';
-        card.innerHTML = `
-            <div class="q-title">${i}-savol varianti:</div>
-            <div class="options-group">
-                <div class="option-btn"><input type="radio" name="q_${i}" id="q_${i}_A" value="A"><label for="q_${i}_A">A</label></div>
-                <div class="option-btn"><input type="radio" name="q_${i}" id="q_${i}_B" value="B"><label for="q_${i}_B">B</label></div>
-                <div class="option-btn"><input type="radio" name="q_${i}" id="q_${i}_C" value="C"><label for="q_${i}_C">C</label></div>
-                <div class="option-btn"><input type="radio" name="q_${i}" id="q_${i}_D" value="D"><label for="q_${i}_D">D</label></div>
-            </div>`;
+        card.innerHTML =
+            '<div class="q-title">' + i + '-savol varianti:</div>' +
+            '<div class="options-group">' +
+            ['A','B','C','D'].map(v =>
+                '<div class="option-btn">' +
+                '<input type="radio" name="q_' + i + '" id="q_' + i + '_' + v + '" value="' + v + '">' +
+                '<label for="q_' + i + '_' + v + '">' + v + '</label>' +
+                '</div>'
+            ).join('') +
+            '</div>';
         closedContainer.appendChild(card);
     }
 
-    // ── Ochiq savollar (math-field) ──
+    // ════════════════════════════════════════════════
+    // Ochiq savollar — Formula + Matn rejimi bilan
+    // ════════════════════════════════════════════════
     const openContainer = document.getElementById('open-container');
-    const openMfIds = [];
+    const openIds = [];
+    const qMode  = {};   // 'f' = formula, 't' = matn
+
     for (let i = 0; i < OPEN_COUNT; i++) {
         const qNum = CLOSED_COUNT + i + 1;
-        const mfId = `mf_open_${i}`;
-        openMfIds.push(mfId);
+        const qId  = 'open_' + i;
+        openIds.push(qId);
+        qMode[qId] = 'f';
+
         const card = document.createElement('div');
         card.className = 'q-card';
-        card.innerHTML = `
-            <div class="q-title">${qNum}-savol javobi (Matematik formula):</div>
-            <math-field id="${mfId}" math-virtual-keyboard-policy="off"></math-field>`;
+        card.innerHTML =
+            '<div class="q-title">' + qNum + '-savol javobi:</div>' +
+
+            // Rejim tugmalari
+            '<div class="mode-toggle">' +
+            '<button type="button" class="mode-btn active" ' +
+                'id="mode_f_' + qId + '" ' +
+                'onclick="setMode(\'' + qId + '\',\'f\')">&#129518; Formula</button>' +
+            '<button type="button" class="mode-btn" ' +
+                'id="mode_t_' + qId + '" ' +
+                'onclick="setMode(\'' + qId + '\',\'t\')">&#128288; Matn (so\'z)</button>' +
+            '</div>' +
+
+            // Formula maydoni
+            '<math-field id="mf_' + qId + '" math-virtual-keyboard-policy="off"></math-field>' +
+
+            // Matn maydoni
+            '<input type="text" id="tx_' + qId + '" class="text-answer" ' +
+                'placeholder="Javobingizni shu yerga yozing..." ' +
+                'autocomplete="off" autocapitalize="off" spellcheck="false">';
+
         openContainer.appendChild(card);
     }
 
     // ════════════════════════════════════════════════
-    // SCROLL YECHIMI: 1-yechim + 4-yechim
+    // Rejimni almashtirish
     // ════════════════════════════════════════════════
-    const kb = document.getElementById('custom-kb');
-    let activeMf = null;
-    let kbVisible = false;
+    function setMode(qId, mode) {
+        qMode[qId] = mode;
+        const mf   = document.getElementById('mf_' + qId);
+        const tx   = document.getElementById('tx_' + qId);
+        const btnF = document.getElementById('mode_f_' + qId);
+        const btnT = document.getElementById('mode_t_' + qId);
 
-    // Klaviatura balandligini body padding'ga qo'shish
-    function updateBodyPadding(kbHeight) {
-        document.documentElement.style.setProperty('--kb-height', kbHeight + 'px');
-    }
-
-    // Faol math-field'ni klaviatura ustida ko'rsatish
-    function scrollToActiveMf() {
-        if (!activeMf) return;
-        const kbHeight = kb.offsetHeight;
-        const rect = activeMf.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-        const safeBottom = viewportHeight - kbHeight - 16; // 16px qo'shimcha bo'shliq
-
-        if (rect.bottom > safeBottom) {
-            const scrollAmount = rect.bottom - safeBottom;
-            window.scrollBy({ top: scrollAmount, behavior: 'smooth' });
+        if (mode === 't') {
+            mf.style.display = 'none';
+            tx.style.display = 'block';
+            btnF.classList.remove('active');
+            btnT.classList.add('active');
+            // Maxsus klaviaturani yashir — telefon klaviaturasi chiqadi
+            hideKb();
+            tx.focus();
+        } else {
+            tx.style.display = 'none';
+            mf.style.display = 'block';
+            btnT.classList.remove('active');
+            btnF.classList.add('active');
+            mf.focus();
         }
     }
 
-    // Klaviaturani ko'rsatish
+    // Joriy rejimga qarab javobni olish
+    function getOpenAnswer(qId) {
+        if (qMode[qId] === 't') {
+            const tx = document.getElementById('tx_' + qId);
+            return (tx && tx.value) ? tx.value.trim() : '';
+        }
+        const mf = document.getElementById('mf_' + qId);
+        return (mf && mf.value) ? mf.value.trim() : '';
+    }
+
+    // ════════════════════════════════════════════════
+    // Scroll va klaviatura boshqaruvi
+    // ════════════════════════════════════════════════
+    const kb = document.getElementById('custom-kb');
+    let activeMf  = null;
+    let kbVisible = false;
+
+    function updateBodyPadding(h) {
+        document.documentElement.style.setProperty('--kb-height', h + 'px');
+    }
+
+    function scrollToActiveMf() {
+        if (!activeMf) return;
+        const kbH  = kb.offsetHeight;
+        const rect = activeMf.getBoundingClientRect();
+        const safe = window.innerHeight - kbH - 16;
+        if (rect.bottom > safe) {
+            window.scrollBy({ top: rect.bottom - safe, behavior: 'smooth' });
+        }
+    }
+
     function showKb() {
         if (kbVisible) return;
         kb.classList.add('visible');
         kbVisible = true;
-        // Balandlik o'lchovini keyingi frame'ga kechiktir (render tugagandan so'ng)
-        requestAnimationFrame(() => {
+        requestAnimationFrame(function() {
             updateBodyPadding(kb.offsetHeight);
-            // Scroll qilishni biroz kechiktir — padding qo'shilgandan keyin
             setTimeout(scrollToActiveMf, 150);
         });
     }
 
-    // Klaviaturani yashirish
     function hideKb() {
         if (!kbVisible) return;
         kb.classList.remove('visible');
@@ -486,30 +573,22 @@
         activeMf = null;
     }
 
-    // ── 4-yechim: Telegram viewportChanged event ──
-    // Telegram viewport o'zgarganda (masalan, sistema klaviaturasi chiqsa ham)
-    // biz ham o'z klaviaturamizni qayta joylashtirамiz
-    tg.onEvent('viewportChanged', function(eventData) {
-        if (kbVisible && activeMf) {
-            // Viewport o'zgarishi tugagandan so'ng scroll ni qayta hisoblash
-            setTimeout(scrollToActiveMf, 200);
-        }
+    tg.onEvent('viewportChanged', function() {
+        if (kbVisible && activeMf) setTimeout(scrollToActiveMf, 200);
     });
 
-    // ── Klaviatura tab almashtirish ──
     function switchTab(idx) {
-        document.querySelectorAll('.kb-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
-        document.querySelectorAll('.kb-panel').forEach((p, i) => p.classList.toggle('active', i === idx));
+        document.querySelectorAll('.kb-tab').forEach(function(t, i) { t.classList.toggle('active', i === idx); });
+        document.querySelectorAll('.kb-panel').forEach(function(p, i) { p.classList.toggle('active', i === idx); });
     }
 
-    // ── Math-field'larni ishga tushirish ──
+    // Math-field'larni ishga tushirish
     function initMathFields() {
-        openMfIds.forEach(id => {
-            const mf = document.getElementById(id);
+        openIds.forEach(function(id) {
+            const mf = document.getElementById('mf_' + id);
             if (!mf) return;
             mf.mathVirtualKeyboardPolicy = 'off';
-
-            mf.addEventListener('focusin', () => {
+            mf.addEventListener('focusin', function() {
                 activeMf = mf;
                 showKb();
             });
@@ -517,27 +596,37 @@
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () =>
-            customElements.whenDefined('math-field').then(initMathFields)
-        );
+        document.addEventListener('DOMContentLoaded', function() {
+            customElements.whenDefined('math-field').then(initMathFields);
+        });
     } else {
         customElements.whenDefined('math-field').then(initMathFields);
     }
 
-    // Klaviatura tashqarisiga bosilganda yashirish
-    document.addEventListener('pointerdown', (e) => {
+    // Shadow DOM muammosini hal qiluvchi yopish
+    document.addEventListener('pointerdown', function(e) {
         if (kb.contains(e.target)) return;
-        if (e.target.closest('math-field')) return;
-        hideKb();
+        const mfEls = document.querySelectorAll('math-field');
+        const insideMf = Array.prototype.some.call(mfEls, function(mf) {
+            return mf === e.target || mf.contains(e.target);
+        });
+        if (!insideMf) hideKb();
     });
 
-    // ── Klaviatura tugmalari ──
+    // ════════════════════════════════════════════════
+    // Klaviatura tugma funksiyalari
+    // ════════════════════════════════════════════════
     function ins(latex) {
         if (!activeMf) return;
         activeMf.executeCommand(['insert', latex, {
             insertionMode: 'replaceSelection',
             selectionMode: 'placeholder'
         }]);
+    }
+
+    // Prime (shtrix) belgisi: f', x'', y''' kabi
+    function insPrime() {
+        ins("'");
     }
 
     function kbDel() {
@@ -550,40 +639,41 @@
         activeMf.setValue('');
     }
 
-    // ── Javoblarni yuborish ──
+    // ════════════════════════════════════════════════
+    // Javoblarni yuborish
+    // ════════════════════════════════════════════════
     function sendAllAnswers() {
         let emptyCount = 0;
         for (let i = 1; i <= CLOSED_COUNT; i++) {
-            if (!document.querySelector(`input[name="q_${i}"]:checked`)) emptyCount++;
+            if (!document.querySelector('input[name="q_' + i + '"]:checked')) emptyCount++;
         }
-
         let emptyOpenCount = 0;
-        openMfIds.forEach(id => {
-            const mf = document.getElementById(id);
-            if (!mf || !mf.value || !mf.value.trim()) emptyOpenCount++;
+        openIds.forEach(function(id) {
+            if (getOpenAnswer(id) === '') emptyOpenCount++;
         });
 
         if (emptyCount > 0 || emptyOpenCount > 0) {
             const parts = [];
-            if (emptyCount > 0) parts.push(`${emptyCount} ta variantli savol`);
-            if (emptyOpenCount > 0) parts.push(`${emptyOpenCount} ta ochiq savol`);
-            const ok = confirm(`⚠️ ${parts.join(' va ')} javobsiz qolgan!\n\nBaribir yuborasizmi?`);
+            if (emptyCount > 0) parts.push(emptyCount + ' ta variantli savol');
+            if (emptyOpenCount > 0) parts.push(emptyOpenCount + ' ta ochiq savol');
+            const ok = confirm('\u26a0\ufe0f ' + parts.join(' va ') + ' javobsiz qolgan!\n\nBaribir yuborasizmi?');
             if (!ok) return;
         }
 
         const result = { closed_answers: [], open_answers: [] };
         for (let i = 1; i <= CLOSED_COUNT; i++) {
-            const checked = document.querySelector(`input[name="q_${i}"]:checked`);
-            result.closed_answers.push(checked ? checked.value : "—");
+            const checked = document.querySelector('input[name="q_' + i + '"]:checked');
+            result.closed_answers.push(checked ? checked.value : '\u2014');
         }
-        openMfIds.forEach(id => {
-            const mf = document.getElementById(id);
-            result.open_answers.push(mf && mf.value ? mf.value.trim() : "");
+        openIds.forEach(function(id) {
+            result.open_answers.push(getOpenAnswer(id));
         });
 
+        // To'g'ri UTF-8 bayt uzunligini hisoblash
         const jsonStr = JSON.stringify(result);
-        if (jsonStr.length > 4000) {
-            alert('❌ Javoblar hajmi juda katta! Formulalarni qisqartiring.');
+        const byteLen = new TextEncoder().encode(jsonStr).length;
+        if (byteLen > 4000) {
+            alert('\u274c Javoblar hajmi juda katta! Formulalarni qisqartiring.');
             return;
         }
 
