@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>2PL IRT Test Platformasi</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script defer src="https://unpkg.com/mathlive@0.98.5/dist/mathlive.min.js"></script>
+    <!-- TUZATISH: unpkg.com o'rniga barqarorroq jsdelivr CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/mathlive@0.98.5/dist/mathlive.min.js"></script>
     <style>
         :root {
             --tg-theme-bg: var(--tg-theme-bg-color, #f4f6f9);
@@ -69,6 +70,7 @@
             border: none; padding: 15px; border-radius: 10px; font-size: 16px;
             font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(36,139,207,0.3);
         }
+        .btn-submit:disabled { opacity: 0.6; cursor: default; }
 
         /* Maxsus klaviatura */
         #custom-kb {
@@ -131,7 +133,7 @@
 </div>
 
 <div class="submit-container">
-    <button class="btn-submit" onclick="sendAllAnswers()">&#128229; IMTIHONNI YAKUNLASH</button>
+    <button class="btn-submit" id="btn-submit" onclick="sendAllAnswers()">&#128229; IMTIHONNI YAKUNLASH</button>
 </div>
 
 <!-- MAXSUS KLAVIATURA -->
@@ -307,7 +309,7 @@
         </div>
     </div>
 
-    <!-- Panel 3: Latin harflari + YANGI prime tugmasi -->
+    <!-- Panel 3: Latin harflari + prime tugmasi -->
     <div class="kb-panel" id="panel-3">
         <div class="kb-row">
             <button class="kb-btn green" onclick="ins('a')">a</button>
@@ -354,7 +356,6 @@
             <button class="kb-btn orange" onclick="ins('F')">F</button>
             <button class="kb-btn orange" onclick="ins('M')">M</button>
             <button class="kb-btn orange" onclick="ins('N')">N</button>
-            <!-- YANGI: Prime (shtrix) tugmasi -->
             <button class="kb-btn blue" onclick="insPrime()">&#8242;<br><small>shtrix</small></button>
         </div>
     </div>
@@ -686,9 +687,42 @@
     }
 
     // ════════════════════════════════════════════════
+    // TUZATISH: Dialoglar Telegram'ning o'z oynasi orqali.
+    // window.confirm/alert Telegram WebView'da (ayniqsa iOS'da)
+    // bloklanishi mumkin — o'shanda dialog chiqmaydi va tugma
+    // "ishlamayotgandek" ko'rinadi. tg.showConfirm/showAlert esa
+    // Telegram'ning o'z dialogi bo'lib, ishonchli ishlaydi.
+    // Juda eski Telegram versiyalari uchun zaxira sifatida
+    // oddiy confirm/alert saqlab qolindi.
+    // ════════════════════════════════════════════════
+    function safeConfirm(message, callback) {
+        try {
+            if (typeof tg.showConfirm === 'function') {
+                tg.showConfirm(message, function(ok) { callback(!!ok); });
+                return;
+            }
+        } catch (e) { /* zaxiraga o'tamiz */ }
+        callback(window.confirm(message));
+    }
+
+    function safeAlert(message) {
+        try {
+            if (typeof tg.showAlert === 'function') {
+                tg.showAlert(message);
+                return;
+            }
+        } catch (e) { /* zaxiraga o'tamiz */ }
+        window.alert(message);
+    }
+
+    // ════════════════════════════════════════════════
     // Javoblarni yuborish
     // ════════════════════════════════════════════════
+    let sendInProgress = false;   // TUZATISH: ikki marta bosishdan himoya
+
     function sendAllAnswers() {
+        if (sendInProgress) return;
+
         let emptyCount = 0;
         for (let i = 1; i <= CLOSED_COUNT; i++) {
             if (!document.querySelector('input[name="q_' + i + '"]:checked')) emptyCount++;
@@ -702,9 +736,21 @@
             const parts = [];
             if (emptyCount > 0) parts.push(emptyCount + ' ta variantli savol');
             if (emptyOpenCount > 0) parts.push(emptyOpenCount + ' ta ochiq savol');
-            const ok = confirm('\u26a0\ufe0f ' + parts.join(' va ') + ' javobsiz qolgan!\n\nBaribir yuborasizmi?');
-            if (!ok) return;
+            const message = '\u26a0\ufe0f ' + parts.join(' va ') + ' javobsiz qolgan! Baribir yuborasizmi?';
+            safeConfirm(message, function(ok) {
+                if (ok) doSend();
+            });
+            return;
         }
+
+        doSend();
+    }
+
+    function doSend() {
+        if (sendInProgress) return;
+        sendInProgress = true;
+        const btn = document.getElementById('btn-submit');
+        if (btn) btn.disabled = true;
 
         const result = { closed_answers: [], open_answers: [] };
         for (let i = 1; i <= CLOSED_COUNT; i++) {
@@ -719,7 +765,9 @@
         const jsonStr = JSON.stringify(result);
         const byteLen = new TextEncoder().encode(jsonStr).length;
         if (byteLen > 4000) {
-            alert('\u274c Javoblar hajmi juda katta! Formulalarni qisqartiring.');
+            sendInProgress = false;
+            if (btn) btn.disabled = false;
+            safeAlert('\u274c Javoblar hajmi juda katta! Eng uzun formula javoblaringizni soddalashtiring (masalan, murakkab ifoda o\u2018rniga hisoblab, natijani yozing) va qayta urinib ko\u2018ring.');
             return;
         }
 
