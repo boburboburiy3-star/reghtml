@@ -443,6 +443,19 @@
         BLOCKS = [{ count: CLOSED_COUNT, options: 4 }];
     }
 
+    // ── Ochiq savollar uchun maxsus yorliqlar (masalan Matematika/Tarix
+    //    shablonida: 36 a), 36 b), 37 a), 37 b) ... ) ──
+    let OPEN_LABELS = [];
+    const openLabelsParam = params.get('open_labels');
+    if (openLabelsParam) {
+        try {
+            const parsedLabels = JSON.parse(decodeURIComponent(openLabelsParam));
+            if (Array.isArray(parsedLabels)) OPEN_LABELS = parsedLabels;
+        } catch (e) {
+            OPEN_LABELS = [];
+        }
+    }
+
     if (CLOSED_COUNT === 0) {
         document.getElementById('closed-section').style.display = 'none';
     } else {
@@ -498,10 +511,16 @@
         openIds.push(qId);
         qMode[qId] = 'f';
 
+        // Agar maxsus yorliq berilgan bo'lsa (masalan "36 a)"), o'shani
+        // ko'rsatamiz, aks holda oddiy ketma-ket "37-savol" tarzida.
+        const qLabel = (OPEN_LABELS[i] !== undefined && OPEN_LABELS[i] !== null && OPEN_LABELS[i] !== '')
+            ? OPEN_LABELS[i]
+            : (qNum + '-savol');
+
         const card = document.createElement('div');
         card.className = 'q-card';
         card.innerHTML =
-            '<div class="q-title">' + qNum + '-savol javobi:</div>' +
+            '<div class="q-title">' + qLabel + ' javobi:</div>' +
 
             // Rejim tugmalari
             '<div class="mode-toggle">' +
