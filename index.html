@@ -28,7 +28,7 @@
         .section-title { font-size: 18px; font-weight: bold; margin: 20px 0 10px 0; color: #555; border-left: 4px solid var(--primary); padding-left: 8px; }
         .q-card { background: var(--card-bg); padding: 16px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
         .q-title { font-weight: 600; margin-bottom: 12px; font-size: 15px; }
-        .options-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .options-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(48px, 1fr)); gap: 10px; }
         .option-btn input { display: none; }
         .option-btn label {
             display: block; text-align: center; background: rgba(0,0,0,0.03);
@@ -424,6 +424,25 @@
     const OPEN_COUNT   = Math.max(0, isNaN(_o) ? 10 : _o);
     const TOTAL        = CLOSED_COUNT + OPEN_COUNT;
 
+    // ── Yopiq savollar bloklari (har bir blokda nechta savol va
+    //    nechta variant borligi: masalan 32 ta 4-variantli,
+    //    keyin 3 ta 6-variantli) ──
+    const LETTERS = ['A','B','C','D','E','F'];
+    let BLOCKS = [];
+    const blocksParam = params.get('blocks');
+    if (blocksParam) {
+        try {
+            const parsed = JSON.parse(decodeURIComponent(blocksParam));
+            if (Array.isArray(parsed)) BLOCKS = parsed;
+        } catch (e) {
+            BLOCKS = [];
+        }
+    }
+    if (!BLOCKS.length && CLOSED_COUNT > 0) {
+        // Eski (blocksiz) havolalar uchun orqaga moslik: barchasi 4 variant
+        BLOCKS = [{ count: CLOSED_COUNT, options: 4 }];
+    }
+
     if (CLOSED_COUNT === 0) {
         document.getElementById('closed-section').style.display = 'none';
     } else {
@@ -440,23 +459,31 @@
             part + ' Qism. Ochiq savollar (' + openStart + '\u2013' + TOTAL + ')';
     }
 
-    // ── Yopiq savollar (A/B/C/D) ──
+    // ── Yopiq savollar (bloklarga qarab 4/5/6 variant) ──
     const closedContainer = document.getElementById('closed-container');
-    for (let i = 1; i <= CLOSED_COUNT; i++) {
-        const card = document.createElement('div');
-        card.className = 'q-card';
-        card.innerHTML =
-            '<div class="q-title">' + i + '-savol varianti:</div>' +
-            '<div class="options-group">' +
-            ['A','B','C','D'].map(v =>
-                '<div class="option-btn">' +
-                '<input type="radio" name="q_' + i + '" id="q_' + i + '_' + v + '" value="' + v + '">' +
-                '<label for="q_' + i + '_' + v + '">' + v + '</label>' +
-                '</div>'
-            ).join('') +
-            '</div>';
-        closedContainer.appendChild(card);
-    }
+    let qNumClosed = 0;
+    BLOCKS.forEach(function(block) {
+        const optCount = Math.min(6, Math.max(2, parseInt(block.options) || 4));
+        const opts = LETTERS.slice(0, optCount);
+        const cnt  = Math.max(0, parseInt(block.count) || 0);
+        for (let k = 0; k < cnt; k++) {
+            qNumClosed++;
+            const i = qNumClosed;
+            const card = document.createElement('div');
+            card.className = 'q-card';
+            card.innerHTML =
+                '<div class="q-title">' + i + '-savol varianti:</div>' +
+                '<div class="options-group">' +
+                opts.map(function(v) {
+                    return '<div class="option-btn">' +
+                        '<input type="radio" name="q_' + i + '" id="q_' + i + '_' + v + '" value="' + v + '">' +
+                        '<label for="q_' + i + '_' + v + '">' + v + '</label>' +
+                        '</div>';
+                }).join('') +
+                '</div>';
+            closedContainer.appendChild(card);
+        }
+    });
 
     // ════════════════════════════════════════════════
     // Ochiq savollar — Formula + Matn rejimi bilan
