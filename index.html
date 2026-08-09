@@ -113,6 +113,7 @@
         .kb-btn.wide   { flex: 1.5; }
         .kb-btn.del    { background: #5a1a1a; font-size: 18px; }
         .kb-btn.clr    { background: #7a1a1a; font-size: 11px; font-weight: 700; line-height: 1.2; }
+        .kb-btn.arrow  { background: #1a5f8a; font-size: 20px; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -155,6 +156,8 @@
             <button class="kb-btn gray" onclick="ins('4')">4</button>
             <button class="kb-btn gray" onclick="ins('5')">5</button>
             <button class="kb-btn gray" onclick="ins('6')">6</button>
+            <button class="kb-btn arrow" onclick="kbLeft()">&#9664;</button>
+            <button class="kb-btn arrow" onclick="kbRight()">&#9654;</button>
             <button class="kb-btn del" onclick="kbDel()">&#9003;</button>
             <button class="kb-btn clr" onclick="kbClear()">&#128465;<br>Tozala</button>
         </div>
@@ -218,6 +221,8 @@
             <button class="kb-btn blue" onclick="ins('\\cot(\\placeholder{})')">cot<br><small>(&#9633;)</small></button>
             <button class="kb-btn blue" onclick="ins('\\sec(\\placeholder{})')">sec<br><small>(&#9633;)</small></button>
             <button class="kb-btn blue" onclick="ins('\\csc(\\placeholder{})')">csc<br><small>(&#9633;)</small></button>
+            <button class="kb-btn arrow" onclick="kbLeft()">&#9664;</button>
+            <button class="kb-btn arrow" onclick="kbRight()">&#9654;</button>
             <button class="kb-btn del" onclick="kbDel()">&#9003;</button>
             <button class="kb-btn clr" onclick="kbClear()">&#128465;<br>Tozala</button>
         </div>
@@ -268,6 +273,8 @@
             <button class="kb-btn purple" onclick="ins('\\delta')">&#948;</button>
             <button class="kb-btn purple" onclick="ins('\\epsilon')">&#949;</button>
             <button class="kb-btn purple" onclick="ins('\\zeta')">&#950;</button>
+            <button class="kb-btn arrow" onclick="kbLeft()">&#9664;</button>
+            <button class="kb-btn arrow" onclick="kbRight()">&#9654;</button>
             <button class="kb-btn del" onclick="kbDel()">&#9003;</button>
             <button class="kb-btn clr" onclick="kbClear()">&#128465;<br>Tozala</button>
         </div>
@@ -318,6 +325,8 @@
             <button class="kb-btn green" onclick="ins('d')">d</button>
             <button class="kb-btn green" onclick="ins('e')">e</button>
             <button class="kb-btn green" onclick="ins('f')">f</button>
+            <button class="kb-btn arrow" onclick="kbLeft()">&#9664;</button>
+            <button class="kb-btn arrow" onclick="kbRight()">&#9654;</button>
             <button class="kb-btn del" onclick="kbDel()">&#9003;</button>
             <button class="kb-btn clr" onclick="kbClear()">&#128465;<br>Tozala</button>
         </div>
@@ -369,6 +378,8 @@
             <button class="kb-btn" onclick="ins('\\iint')">&#8748;</button>
             <button class="kb-btn" onclick="ins('\\oint')">&#8750;</button>
             <button class="kb-btn" onclick="ins('\\partial')">&#8706;</button>
+            <button class="kb-btn arrow" onclick="kbLeft()">&#9664;</button>
+            <button class="kb-btn arrow" onclick="kbRight()">&#9654;</button>
             <button class="kb-btn del" onclick="kbDel()">&#9003;</button>
             <button class="kb-btn clr" onclick="kbClear()">&#128465;<br>Tozala</button>
         </div>
@@ -684,6 +695,20 @@
     function kbClear() {
         if (!activeMf) return;
         activeMf.setValue('');
+    }
+
+    // Kursorni formula ichida chapga/o'ngga ko'chirish (strelkalar).
+    // Kasr, ildiz, daraja kabi qismlar orasida erkin harakat qilish uchun.
+    function kbLeft() {
+        if (!activeMf) return;
+        activeMf.executeCommand('moveToPreviousChar');
+        activeMf.focus();
+    }
+
+    function kbRight() {
+        if (!activeMf) return;
+        activeMf.executeCommand('moveToNextChar');
+        activeMf.focus();
     }
 
     // ════════════════════════════════════════════════
