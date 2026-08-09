@@ -701,14 +701,18 @@
     // Kasr, ildiz, daraja kabi qismlar orasida erkin harakat qilish uchun.
     function kbLeft() {
         if (!activeMf) return;
-        activeMf.executeCommand('moveToPreviousChar');
-        activeMf.focus();
+        try {
+            activeMf.executeCommand('moveToPreviousChar');
+            activeMf.focus();
+        } catch (e) { console.warn('kbLeft:', e); }
     }
 
     function kbRight() {
         if (!activeMf) return;
-        activeMf.executeCommand('moveToNextChar');
-        activeMf.focus();
+        try {
+            activeMf.executeCommand('moveToNextChar');
+            activeMf.focus();
+        } catch (e) { console.warn('kbRight:', e); }
     }
 
     // ════════════════════════════════════════════════
