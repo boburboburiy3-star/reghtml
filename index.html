@@ -43,7 +43,6 @@
             min-height: 52px; display: block;
         }
         math-field:focus-within { border-color: var(--primary); }
-
         /* Matn rejimi input */
         .text-answer {
             width: 100%; font-size: 17px; border: 2px solid #ccc; border-radius: 8px;
@@ -52,7 +51,6 @@
             transition: border-color 0.2s;
         }
         .text-answer:focus { border-color: var(--primary); }
-
         /* Rejim almashtirish tugmalari */
         .mode-toggle { display: flex; gap: 7px; margin-bottom: 10px; }
         .mode-btn {
@@ -63,7 +61,6 @@
             transition: background 0.15s, color 0.15s, border-color 0.15s;
         }
         .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-
         .submit-container { text-align: center; margin-top: 30px; margin-bottom: 20px; }
         .btn-submit {
             width: 100%; max-width: 400px; background: var(--primary); color: white;
@@ -71,7 +68,6 @@
             font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(36,139,207,0.3);
         }
         .btn-submit:disabled { opacity: 0.6; cursor: default; }
-
         /* Maxsus klaviatura */
         #custom-kb {
             display: none; position: fixed;
@@ -94,9 +90,9 @@
         .kb-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
         .kb-panel { display: none; padding: 8px 6px 16px; }
         .kb-panel.active { display: block; }
-        .kb-row { display: flex; gap: 5px; justify-content: center; margin-bottom: 5px; }
+        .kb-row { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 5px; margin-bottom: 5px; }
         .kb-btn {
-            flex: 1; background: #3a3a3c; color: white; border: none;
+            width: 100%; background: #3a3a3c; color: white; border: none;
             border-radius: 8px; padding: 0 2px; font-size: 14px; font-weight: 600;
             cursor: pointer; text-align: center; height: 44px;
             display: flex; align-items: center; justify-content: center; flex-direction: column;
@@ -105,38 +101,41 @@
         .kb-btn:active { opacity: 0.6; }
         .kb-btn sub, .kb-btn sup { font-size: 9px; }
         .kb-btn small { font-size: 9px; opacity: 0.65; margin-top: 1px; }
+        .formula-glyph { display: inline-flex; align-items: center; line-height: 1; }
+        .formula-base { font-size: 17px; }
+        .formula-slot { width: 12px; height: 10px; border: 1px solid rgba(255,255,255,0.85); display: inline-block; }
+        .formula-sup { align-self: flex-start; margin-top: -3px; margin-left: 2px; }
+        .formula-sub { align-self: flex-end; margin-bottom: -2px; margin-left: 2px; }
+        .root-symbol { font-size: 20px; }
+        .root-radicand { border-top: 1px solid white; padding: 2px 4px 0; margin-left: 1px; }
+        .root-index { font-size: 10px; align-self: flex-start; margin: -2px 0 0 1px; }
         .kb-btn.blue   { background: #1a5f8a; }
         .kb-btn.green  { background: #1e6b45; }
         .kb-btn.purple { background: #5b3a8a; }
         .kb-btn.orange { background: #8a4f1a; }
         .kb-btn.gray   { background: #48484a; }
-        .kb-btn.wide   { flex: 1.5; }
+        .kb-btn.wide   { grid-column: span 2; }
         .kb-btn.del    { background: #5a1a1a; font-size: 18px; }
         .kb-btn.clr    { background: #7a1a1a; font-size: 11px; font-weight: 700; line-height: 1.2; }
         .kb-btn.arrow  { background: #1a5f8a; font-size: 20px; font-weight: 700; }
     </style>
 </head>
 <body>
-
 <div class="header">
     <h2>🧮 2PL IRT Elektron Imtihon</h2>
     <p style="margin: 5px 0 0 0; font-size: 13px; opacity: 0.8;">Barcha javoblarni belgilab, pastdagi tugmani bosing</p>
 </div>
-
 <div id="closed-section">
     <div class="section-title" id="closed-title">I Qism. Variantli savollar</div>
     <div id="closed-container"></div>
 </div>
-
 <div id="open-section">
     <div class="section-title" id="open-title">II Qism. Ochiq savollar</div>
     <div id="open-container"></div>
 </div>
-
 <div class="submit-container">
     <button class="btn-submit" id="btn-submit" onclick="sendAllAnswers()">&#128229; IMTIHONNI YAKUNLASH</button>
 </div>
-
 <!-- MAXSUS KLAVIATURA -->
 <div id="custom-kb">
     <div class="kb-tabs">
@@ -146,7 +145,6 @@
         <div class="kb-tab" onclick="switchTab(3)">ABC Latin</div>
         <div class="kb-tab" onclick="switchTab(4)">&#8721; Operator</div>
     </div>
-
     <!-- Panel 0: Asosiy -->
     <div class="kb-panel active" id="panel-0">
         <div class="kb-row">
@@ -187,16 +185,16 @@
                 </span>
             </button>
             <button class="kb-btn blue" onclick="ins('{\\placeholder{}}^{\\placeholder{}}')">
-                <span style="display:flex;align-items:flex-start;line-height:1"><span style="font-size:14px">x</span><span style="font-size:9px;margin-top:1px">&#9633;</span></span>
+                <span class="formula-glyph"><span class="formula-base">x</span><span class="formula-slot formula-sup"></span></span>
             </button>
             <button class="kb-btn blue" onclick="ins('{\\placeholder{}}_{\\placeholder{}}')">
-                <span style="display:flex;align-items:flex-end;line-height:1"><span style="font-size:14px">x</span><span style="font-size:9px;margin-bottom:1px">&#9633;</span></span>
+                <span class="formula-glyph"><span class="formula-base">x</span><span class="formula-slot formula-sub"></span></span>
             </button>
             <button class="kb-btn blue" onclick="ins('\\sqrt{\\placeholder{}}')">
-                <span style="display:inline-flex;align-items:center;line-height:1"><span style="font-size:18px;line-height:1">&#8730;</span><span style="font-size:11px;border-top:1.5px solid white;border-right:1.5px solid white;padding:1px 4px;margin-left:1px">&#9633;</span></span>
+                <span class="formula-glyph"><span class="root-symbol">&#8730;</span><span class="root-radicand"><span class="formula-slot"></span></span></span>
             </button>
             <button class="kb-btn blue" onclick="ins('\\sqrt[\\placeholder{}]{\\placeholder{}}')">
-                <span style="display:inline-flex;align-items:center;line-height:1"><span style="font-size:9px;align-self:flex-start;margin-top:1px">n</span><span style="font-size:16px;line-height:1">&#8730;</span><span style="font-size:11px;border-top:1.5px solid white;border-right:1.5px solid white;padding:1px 4px;margin-left:1px">&#9633;</span></span>
+                <span class="formula-glyph"><span class="root-index">n</span><span class="root-symbol">&#8730;</span><span class="root-radicand"><span class="formula-slot"></span></span></span>
             </button>
             <button class="kb-btn green" onclick="ins('x')">x</button>
             <button class="kb-btn green" onclick="ins('y')">y</button>
@@ -211,7 +209,6 @@
             <button class="kb-btn" onclick="ins('%')">%</button>
         </div>
     </div>
-
     <!-- Panel 1: Funksiyalar -->
     <div class="kb-panel" id="panel-1">
         <div class="kb-row">
@@ -227,10 +224,15 @@
             <button class="kb-btn clr" onclick="kbClear()">&#128465;<br>Tozala</button>
         </div>
         <div class="kb-row">
+            <button class="kb-btn orange" onclick="ins('\\arcsin(\\placeholder{})')">arcsin<br><small>(&#9633;)</small></button>
+            <button class="kb-btn orange" onclick="ins('\\arccos(\\placeholder{})')">arccos<br><small>(&#9633;)</small></button>
+            <button class="kb-btn orange" onclick="ins('\\arctan(\\placeholder{})')">arctan<br><small>(&#9633;)</small></button>
             <button class="kb-btn orange" onclick="ins('\\sin^{-1}(\\placeholder{})')">sin&#8315;&#185;<br><small>(&#9633;)</small></button>
             <button class="kb-btn orange" onclick="ins('\\cos^{-1}(\\placeholder{})')">cos&#8315;&#185;<br><small>(&#9633;)</small></button>
             <button class="kb-btn orange" onclick="ins('\\tan^{-1}(\\placeholder{})')">tan&#8315;&#185;<br><small>(&#9633;)</small></button>
             <button class="kb-btn orange" onclick="ins('\\cot^{-1}(\\placeholder{})')">cot&#8315;&#185;<br><small>(&#9633;)</small></button>
+            <button class="kb-btn orange" onclick="ins('\\sec^{-1}(\\placeholder{})')">sec&#8315;&#185;<br><small>(&#9633;)</small></button>
+            <button class="kb-btn orange" onclick="ins('\\csc^{-1}(\\placeholder{})')">csc&#8315;&#185;<br><small>(&#9633;)</small></button>
             <button class="kb-btn" onclick="ins('\\sinh(\\placeholder{})')">sinh</button>
             <button class="kb-btn" onclick="ins('\\cosh(\\placeholder{})')">cosh</button>
             <button class="kb-btn" onclick="ins('\\tanh(\\placeholder{})')">tanh</button>
@@ -263,7 +265,6 @@
             <button class="kb-btn gray" onclick="ins('=')">=</button>
         </div>
     </div>
-
     <!-- Panel 2: Grek harflari -->
     <div class="kb-panel" id="panel-2">
         <div class="kb-row">
@@ -315,7 +316,6 @@
             <button class="kb-btn orange" onclick="ins('\\Omega')">&#937;</button>
         </div>
     </div>
-
     <!-- Panel 3: Latin harflari + prime tugmasi -->
     <div class="kb-panel" id="panel-3">
         <div class="kb-row">
@@ -368,7 +368,6 @@
             <button class="kb-btn blue" onclick="insPrime()">&#8242;<br><small>shtrix</small></button>
         </div>
     </div>
-
     <!-- Panel 4: Operatorlar -->
     <div class="kb-panel" id="panel-4">
         <div class="kb-row">
@@ -421,11 +420,9 @@
         </div>
     </div>
 </div>
-
 <script>
     const tg = window.Telegram.WebApp;
     tg.ready(); tg.expand();
-
     // ════════════════════════════════════════════════
     // URL parametrlardan savollar sonini o'qish
     // ════════════════════════════════════════════════
@@ -435,7 +432,6 @@
     const CLOSED_COUNT = Math.max(0, isNaN(_c) ? 35 : _c);
     const OPEN_COUNT   = Math.max(0, isNaN(_o) ? 10 : _o);
     const TOTAL        = CLOSED_COUNT + OPEN_COUNT;
-
     // ── Yopiq savollar bloklari (har bir blokda nechta savol va
     //    nechta variant borligi: masalan 32 ta 4-variantli,
     //    keyin 3 ta 6-variantli) ──
@@ -454,7 +450,6 @@
         // Eski (blocksiz) havolalar uchun orqaga moslik: barchasi 4 variant
         BLOCKS = [{ count: CLOSED_COUNT, options: 4 }];
     }
-
     // ── Ochiq savollar uchun maxsus yorliqlar (masalan Matematika/Tarix
     //    shablonida: 36 a), 36 b), 37 a), 37 b) ... ) ──
     let OPEN_LABELS = [];
@@ -467,14 +462,12 @@
             OPEN_LABELS = [];
         }
     }
-
     if (CLOSED_COUNT === 0) {
         document.getElementById('closed-section').style.display = 'none';
     } else {
         document.getElementById('closed-title').textContent =
            'I Qism. Variantli savollar (1\u2013' + CLOSED_COUNT + ')';
     }
-
     if (OPEN_COUNT === 0) {
         document.getElementById('open-section').style.display = 'none';
     } else {
@@ -483,7 +476,6 @@
         document.getElementById('open-title').textContent =
             part + ' Qism. Ochiq savollar (' + openStart + '\u2013' + TOTAL + ')';
     }
-
     // ── Yopiq savollar (bloklarga qarab 4/5/6 variant) ──
     const closedContainer = document.getElementById('closed-container');
     let qNumClosed = 0;
@@ -509,31 +501,26 @@
             closedContainer.appendChild(card);
         }
     });
-
     // ════════════════════════════════════════════════
     // Ochiq savollar — Formula + Matn rejimi bilan
     // ════════════════════════════════════════════════
     const openContainer = document.getElementById('open-container');
     const openIds = [];
     const qMode  = {};   // 'f' = formula, 't' = matn
-
     for (let i = 0; i < OPEN_COUNT; i++) {
         const qNum = CLOSED_COUNT + i + 1;
         const qId  = 'open_' + i;
         openIds.push(qId);
         qMode[qId] = 'f';
-
         // Agar maxsus yorliq berilgan bo'lsa (masalan "36 a)"), o'shani
         // ko'rsatamiz, aks holda oddiy ketma-ket "37-savol" tarzida.
         const qLabel = (OPEN_LABELS[i] !== undefined && OPEN_LABELS[i] !== null && OPEN_LABELS[i] !== '')
             ? OPEN_LABELS[i]
             : (qNum + '-savol');
-
         const card = document.createElement('div');
         card.className = 'q-card';
         card.innerHTML =
             '<div class="q-title">' + qLabel + ' javobi:</div>' +
-
             // Rejim tugmalari
             '<div class="mode-toggle">' +
             '<button type="button" class="mode-btn active" ' +
@@ -543,18 +530,14 @@
                 'id="mode_t_' + qId + '" ' +
                 'onclick="setMode(\'' + qId + '\',\'t\')">&#128288; Matn (so\'z)</button>' +
             '</div>' +
-
             // Formula maydoni
             '<math-field id="mf_' + qId + '" math-virtual-keyboard-policy="off"></math-field>' +
-
             // Matn maydoni
             '<input type="text" id="tx_' + qId + '" class="text-answer" ' +
                 'placeholder="Javobingizni shu yerga yozing..." ' +
                 'autocomplete="off" autocapitalize="off" spellcheck="false">';
-
         openContainer.appendChild(card);
     }
-
     // ════════════════════════════════════════════════
     // Rejimni almashtirish
     // ════════════════════════════════════════════════
@@ -564,7 +547,6 @@
         const tx   = document.getElementById('tx_' + qId);
         const btnF = document.getElementById('mode_f_' + qId);
         const btnT = document.getElementById('mode_t_' + qId);
-
         if (mode === 't') {
             mf.style.display = 'none';
             tx.style.display = 'block';
@@ -581,7 +563,6 @@
             mf.focus();
         }
     }
-
     // Joriy rejimga qarab javobni olish
     function getOpenAnswer(qId) {
         if (qMode[qId] === 't') {
@@ -591,18 +572,15 @@
         const mf = document.getElementById('mf_' + qId);
         return (mf && mf.value) ? mf.value.trim() : '';
     }
-
     // ════════════════════════════════════════════════
     // Scroll va klaviatura boshqaruvi
     // ════════════════════════════════════════════════
     const kb = document.getElementById('custom-kb');
     let activeMf  = null;
     let kbVisible = false;
-
     function updateBodyPadding(h) {
         document.documentElement.style.setProperty('--kb-height', h + 'px');
     }
-
     function scrollToActiveMf() {
         if (!activeMf) return;
         const kbH  = kb.offsetHeight;
@@ -612,7 +590,6 @@
             window.scrollBy({ top: rect.bottom - safe, behavior: 'smooth' });
         }
     }
-
     function showKb() {
         if (kbVisible) return;
         kb.classList.add('visible');
@@ -622,7 +599,6 @@
             setTimeout(scrollToActiveMf, 150);
         });
     }
-
     function hideKb() {
         if (!kbVisible) return;
         kb.classList.remove('visible');
@@ -630,16 +606,13 @@
         updateBodyPadding(0);
         activeMf = null;
     }
-
     tg.onEvent('viewportChanged', function() {
         if (kbVisible && activeMf) setTimeout(scrollToActiveMf, 200);
     });
-
     function switchTab(idx) {
         document.querySelectorAll('.kb-tab').forEach(function(t, i) { t.classList.toggle('active', i === idx); });
         document.querySelectorAll('.kb-panel').forEach(function(p, i) { p.classList.toggle('active', i === idx); });
     }
-
     // Math-field'larni ishga tushirish
     function initMathFields() {
         openIds.forEach(function(id) {
@@ -652,7 +625,6 @@
             });
         });
     }
-
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             customElements.whenDefined('math-field').then(initMathFields);
@@ -660,7 +632,6 @@
     } else {
         customElements.whenDefined('math-field').then(initMathFields);
     }
-
     // Shadow DOM muammosini hal qiluvchi yopish
     document.addEventListener('pointerdown', function(e) {
         if (kb.contains(e.target)) return;
@@ -670,7 +641,6 @@
         });
         if (!insideMf) hideKb();
     });
-
     // ════════════════════════════════════════════════
     // Klaviatura tugma funksiyalari
     // ════════════════════════════════════════════════
@@ -681,22 +651,18 @@
             selectionMode: 'placeholder'
         }]);
     }
-
     // Prime (shtrix) belgisi: f', x'', y''' kabi
     function insPrime() {
         ins("'");
     }
-
     function kbDel() {
         if (!activeMf) return;
         activeMf.executeCommand('deleteBackward');
     }
-
     function kbClear() {
         if (!activeMf) return;
         activeMf.setValue('');
     }
-
     // Kursorni formula ichida chapga/o'ngga ko'chirish (strelkalar).
     // Kasr, ildiz, daraja kabi qismlar orasida erkin harakat qilish uchun.
     function kbLeft() {
@@ -706,7 +672,6 @@
             activeMf.focus();
         } catch (e) { console.warn('kbLeft:', e); }
     }
-
     function kbRight() {
         if (!activeMf) return;
         try {
@@ -714,7 +679,6 @@
             activeMf.focus();
         } catch (e) { console.warn('kbRight:', e); }
     }
-
     // ════════════════════════════════════════════════
     // TUZATISH: Dialoglar Telegram'ning o'z oynasi orqali.
     // window.confirm/alert Telegram WebView'da (ayniqsa iOS'da)
@@ -733,7 +697,6 @@
         } catch (e) { /* zaxiraga o'tamiz */ }
         callback(window.confirm(message));
     }
-
     function safeAlert(message) {
         try {
             if (typeof tg.showAlert === 'function') {
@@ -743,15 +706,12 @@
         } catch (e) { /* zaxiraga o'tamiz */ }
         window.alert(message);
     }
-
     // ════════════════════════════════════════════════
     // Javoblarni yuborish
     // ════════════════════════════════════════════════
     let sendInProgress = false;   // TUZATISH: ikki marta bosishdan himoya
-
     function sendAllAnswers() {
         if (sendInProgress) return;
-
         let emptyCount = 0;
         for (let i = 1; i <= CLOSED_COUNT; i++) {
             if (!document.querySelector('input[name="q_' + i + '"]:checked')) emptyCount++;
@@ -760,7 +720,6 @@
         openIds.forEach(function(id) {
             if (getOpenAnswer(id) === '') emptyOpenCount++;
         });
-
         if (emptyCount > 0 || emptyOpenCount > 0) {
             const parts = [];
             if (emptyCount > 0) parts.push(emptyCount + ' ta variantli savol');
@@ -771,16 +730,13 @@
             });
             return;
         }
-
         doSend();
     }
-
     function doSend() {
         if (sendInProgress) return;
         sendInProgress = true;
         const btn = document.getElementById('btn-submit');
         if (btn) btn.disabled = true;
-
         const result = { closed_answers: [], open_answers: [] };
         for (let i = 1; i <= CLOSED_COUNT; i++) {
             const checked = document.querySelector('input[name="q_' + i + '"]:checked');
@@ -789,7 +745,6 @@
         openIds.forEach(function(id) {
             result.open_answers.push(getOpenAnswer(id));
         });
-
         // To'g'ri UTF-8 bayt uzunligini hisoblash
         const jsonStr = JSON.stringify(result);
         const byteLen = new TextEncoder().encode(jsonStr).length;
@@ -799,7 +754,6 @@
             safeAlert('\u274c Javoblar hajmi juda katta! Eng uzun formula javoblaringizni soddalashtiring (masalan, murakkab ifoda o\u2018rniga hisoblab, natijani yozing) va qayta urinib ko\u2018ring.');
             return;
         }
-
         tg.sendData(jsonStr);
         tg.close();
     }
