@@ -90,7 +90,18 @@
         .kb-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
         .kb-panel { display: none; padding: 8px 6px 16px; }
         .kb-panel.active { display: block; }
+        .kb-group-title {
+            max-width: 720px; margin: 6px auto 5px; padding-left: 2px;
+            color: #a9abb0; font-size: 10px; font-weight: 700;
+            letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .kb-group-title.arc-title { color: #e4a15e; }
+        .kb-group-title.log-title { color: #75d1a0; }
         .kb-row { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 5px; margin-bottom: 5px; }
+        .kb-row.function-row { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 480px; margin-left: auto; margin-right: auto; }
+        .kb-row.function-main { grid-template-columns: repeat(6, minmax(0, 1fr)); max-width: 720px; margin-left: auto; margin-right: auto; }
+        .kb-row.function-actions { grid-template-columns: repeat(4, minmax(0, 72px)); justify-content: center; max-width: 360px; margin-left: auto; margin-right: auto; }
+        .kb-row.log-row { grid-template-columns: repeat(5, minmax(0, 1fr)); max-width: 600px; margin-left: auto; margin-right: auto; }
         .kb-btn {
             width: 100%; background: #3a3a3c; color: white; border: none;
             border-radius: 8px; padding: 0 2px; font-size: 14px; font-weight: 600;
@@ -107,8 +118,8 @@
         .formula-sup { align-self: flex-start; margin-top: -3px; margin-left: 2px; }
         .formula-sub { align-self: flex-end; margin-bottom: -2px; margin-left: 2px; }
         .root-symbol { font-size: 20px; }
-        .root-radicand { border-top: 1px solid white; padding: 2px 4px 0; margin-left: 1px; }
-        .root-index { font-size: 10px; align-self: flex-start; margin: -2px 0 0 1px; }
+        .root-radicand { min-width: 15px; height: 14px; border-top: 1.5px solid white; padding: 2px 3px 0; margin-left: 1px; }
+        .root-index { font-size: 10px; align-self: flex-start; margin: -3px 0 0 1px; }
         .kb-btn.blue   { background: #1a5f8a; }
         .kb-btn.green  { background: #1e6b45; }
         .kb-btn.purple { background: #5b3a8a; }
@@ -118,6 +129,18 @@
         .kb-btn.del    { background: #5a1a1a; font-size: 18px; }
         .kb-btn.clr    { background: #7a1a1a; font-size: 11px; font-weight: 700; line-height: 1.2; }
         .kb-btn.arrow  { background: #1a5f8a; font-size: 20px; font-weight: 700; }
+        .function-main .kb-btn { height: 48px; font-size: 15px; }
+        .function-actions .kb-btn { height: 38px; }
+        .function-row .kb-btn { height: 48px; font-size: 13px; }
+        .log-row .kb-btn { height: 48px; font-size: 13px; }
+        @media (max-width: 420px) {
+            .kb-row { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+            .kb-row.function-main { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .kb-row.function-actions { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            .kb-row.function-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .kb-row.log-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .kb-btn { font-size: 13px; }
+        }
     </style>
 </head>
 <body>
@@ -211,58 +234,34 @@
     </div>
     <!-- Panel 1: Funksiyalar -->
     <div class="kb-panel" id="panel-1">
-        <div class="kb-row">
-            <button class="kb-btn blue" onclick="ins('\\sin(\\placeholder{})')">sin<br><small>(&#9633;)</small></button>
-            <button class="kb-btn blue" onclick="ins('\\cos(\\placeholder{})')">cos<br><small>(&#9633;)</small></button>
-            <button class="kb-btn blue" onclick="ins('\\tan(\\placeholder{})')">tan<br><small>(&#9633;)</small></button>
-            <button class="kb-btn blue" onclick="ins('\\cot(\\placeholder{})')">cot<br><small>(&#9633;)</small></button>
-            <button class="kb-btn blue" onclick="ins('\\sec(\\placeholder{})')">sec<br><small>(&#9633;)</small></button>
-            <button class="kb-btn blue" onclick="ins('\\csc(\\placeholder{})')">csc<br><small>(&#9633;)</small></button>
+        <div class="kb-group-title">Trigonometrik funksiyalar</div>
+        <div class="kb-row function-main">
+            <button class="kb-btn blue" onclick="ins('\\sin(\\placeholder{})')">sin<small>□</small></button>
+            <button class="kb-btn blue" onclick="ins('\\cos(\\placeholder{})')">cos<small>□</small></button>
+            <button class="kb-btn blue" onclick="ins('\\tan(\\placeholder{})')">tan<small>□</small></button>
+            <button class="kb-btn blue" onclick="ins('\\cot(\\placeholder{})')">cot<small>□</small></button>
+            <button class="kb-btn blue" onclick="ins('\\sec(\\placeholder{})')">sec<small>□</small></button>
+            <button class="kb-btn blue" onclick="ins('\\csc(\\placeholder{})')">csc<small>□</small></button>
+        </div>
+        <div class="kb-row function-actions">
             <button class="kb-btn arrow" onclick="kbLeft()">&#9664;</button>
             <button class="kb-btn arrow" onclick="kbRight()">&#9654;</button>
             <button class="kb-btn del" onclick="kbDel()">&#9003;</button>
             <button class="kb-btn clr" onclick="kbClear()">&#128465;<br>Tozala</button>
         </div>
-        <div class="kb-row">
-            <button class="kb-btn orange" onclick="ins('\\arcsin(\\placeholder{})')">arcsin<br><small>(&#9633;)</small></button>
-            <button class="kb-btn orange" onclick="ins('\\arccos(\\placeholder{})')">arccos<br><small>(&#9633;)</small></button>
-            <button class="kb-btn orange" onclick="ins('\\arctan(\\placeholder{})')">arctan<br><small>(&#9633;)</small></button>
-            <button class="kb-btn orange" onclick="ins('\\sin^{-1}(\\placeholder{})')">sin&#8315;&#185;<br><small>(&#9633;)</small></button>
-            <button class="kb-btn orange" onclick="ins('\\cos^{-1}(\\placeholder{})')">cos&#8315;&#185;<br><small>(&#9633;)</small></button>
-            <button class="kb-btn orange" onclick="ins('\\tan^{-1}(\\placeholder{})')">tan&#8315;&#185;<br><small>(&#9633;)</small></button>
-            <button class="kb-btn orange" onclick="ins('\\cot^{-1}(\\placeholder{})')">cot&#8315;&#185;<br><small>(&#9633;)</small></button>
-            <button class="kb-btn orange" onclick="ins('\\sec^{-1}(\\placeholder{})')">sec&#8315;&#185;<br><small>(&#9633;)</small></button>
-            <button class="kb-btn orange" onclick="ins('\\csc^{-1}(\\placeholder{})')">csc&#8315;&#185;<br><small>(&#9633;)</small></button>
-            <button class="kb-btn" onclick="ins('\\sinh(\\placeholder{})')">sinh</button>
-            <button class="kb-btn" onclick="ins('\\cosh(\\placeholder{})')">cosh</button>
-            <button class="kb-btn" onclick="ins('\\tanh(\\placeholder{})')">tanh</button>
+        <div class="kb-group-title arc-title">Teskari trigonometrik</div>
+        <div class="kb-row function-row">
+            <button class="kb-btn orange" onclick="ins('\\arcsin(\\placeholder{})')">arcsin<small>□</small></button>
+            <button class="kb-btn orange" onclick="ins('\\arccos(\\placeholder{})')">arccos<small>□</small></button>
+            <button class="kb-btn orange" onclick="ins('\\arctan(\\placeholder{})')">arctan<small>□</small></button>
         </div>
-        <div class="kb-row">
-            <button class="kb-btn green" onclick="ins('\\log_{\\placeholder{}}(\\placeholder{})')">log<sub>&#9633;</sub><br><small>(&#9633;)</small></button>
-            <button class="kb-btn green" onclick="ins('\\log(\\placeholder{})')">log<br><small>(&#9633;)</small></button>
-            <button class="kb-btn green" onclick="ins('\\ln(\\placeholder{})')">ln<br><small>(&#9633;)</small></button>
-            <button class="kb-btn green" onclick="ins('\\log_{10}(\\placeholder{})')">lg<br><small>(&#9633;)</small></button>
-            <button class="kb-btn blue" onclick="ins('\\sqrt{\\placeholder{}}')">&#8730;&#9633;</button>
-            <button class="kb-btn blue" onclick="ins('\\sqrt[\\placeholder{}]{\\placeholder{}}')"><sup>n</sup>&#8730;&#9633;</button>
-            <button class="kb-btn blue" onclick="ins('|\\placeholder{}|')">|&#9633;|</button>
-        </div>
-        <div class="kb-row">
-            <button class="kb-btn" onclick="ins('\\lim_{\\placeholder{} \\to \\placeholder{}}')">lim<sub>&#9633;&#8594;&#9633;</sub></button>
-            <button class="kb-btn" onclick="ins('\\lim_{\\placeholder{} \\to \\infty}')">lim<sub>&#8734;</sub></button>
-            <button class="kb-btn" onclick="ins('\\max(\\placeholder{})')">max</button>
-            <button class="kb-btn" onclick="ins('\\min(\\placeholder{})')">min</button>
-            <button class="kb-btn" onclick="ins('\\gcd(\\placeholder{},\\placeholder{})')">gcd</button>
-            <button class="kb-btn" onclick="ins('\\lcm(\\placeholder{},\\placeholder{})')">lcm</button>
-            <button class="kb-btn purple" onclick="ins('e^{\\placeholder{}}')">e<sup>&#9633;</sup></button>
-        </div>
-        <div class="kb-row">
-            <button class="kb-btn" onclick="ins('(')"> ( </button>
-            <button class="kb-btn" onclick="ins(')')"> ) </button>
-            <button class="kb-btn gray" onclick="ins('0')">0</button>
-            <button class="kb-btn gray" onclick="ins('1')">1</button>
-            <button class="kb-btn gray" onclick="ins('2')">2</button>
-            <button class="kb-btn gray" onclick="ins('.')">.</button>
-            <button class="kb-btn gray" onclick="ins('=')">=</button>
+        <div class="kb-group-title log-title">Logarifmlar</div>
+        <div class="kb-row log-row">
+            <button class="kb-btn green" onclick="ins('\\log_{\\placeholder{}}(\\placeholder{})')">log<sub>□</sub><small>□</small></button>
+            <button class="kb-btn green" onclick="ins('\\log(\\placeholder{})')">log<small>□</small></button>
+            <button class="kb-btn green" onclick="ins('\\ln(\\placeholder{})')">ln<small>□</small></button>
+            <button class="kb-btn green" onclick="ins('\\log_{10}(\\placeholder{})')">lg<small>□</small></button>
+            <button class="kb-btn blue" onclick="ins('|\\placeholder{}|')">|□|</button>
         </div>
     </div>
     <!-- Panel 2: Grek harflari -->
