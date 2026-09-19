@@ -40,7 +40,7 @@
         math-field {
             width: 100%; font-size: 22px; border: 2px solid #ccc; border-radius: 8px;
             padding: 12px; background: white; color: black; outline: none;
-            min-height: 52px; display: block;
+            min-height: 58px; display: block; overflow: hidden;
         }
         math-field:focus-within { border-color: var(--primary); }
         /* Matn rejimi input */
@@ -72,22 +72,24 @@
         #custom-kb {
             display: none; position: fixed;
             bottom: 0; left: 0; right: 0;
-            background: #1c1c1e; z-index: 9999;
-            box-shadow: 0 -4px 24px rgba(0,0,0,0.5);
+            background: #f4f3fb; color: #20212a; z-index: 9999;
+            max-height: 64vh; overflow-y: auto; overscroll-behavior: contain;
+            border-top: 1px solid #d8d5e6;
+            box-shadow: 0 -8px 28px rgba(54, 48, 92, 0.22);
         }
         #custom-kb.visible { display: block; }
         .kb-tabs {
-            display: flex; background: #111; border-bottom: 1px solid #333;
+            display: flex; background: #ffffff; border-bottom: 1px solid #d9d6e5;
             overflow-x: auto; scrollbar-width: none;
         }
         .kb-tabs::-webkit-scrollbar { display: none; }
         .kb-tab {
-            flex: 1; min-width: 60px; padding: 9px 4px; color: #888;
+            flex: 1; min-width: 60px; padding: 10px 4px; color: #747384;
             font-size: 11px; font-weight: 600; text-align: center; cursor: pointer;
             border-bottom: 2px solid transparent; white-space: nowrap;
             user-select: none; -webkit-tap-highlight-color: transparent;
         }
-        .kb-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .kb-tab.active { color: #267bb8; border-bottom-color: #267bb8; background: #f4f8ff; }
         .kb-panel { display: none; padding: 8px 6px 16px; }
         .kb-panel.active { display: block; }
         .kb-group-title {
@@ -103,13 +105,14 @@
         .kb-row.function-actions { grid-template-columns: repeat(4, minmax(0, 72px)); justify-content: center; max-width: 360px; margin-left: auto; margin-right: auto; }
         .kb-row.log-row { grid-template-columns: repeat(5, minmax(0, 1fr)); max-width: 600px; margin-left: auto; margin-right: auto; }
         .kb-btn {
-            width: 100%; background: #3a3a3c; color: white; border: none;
-            border-radius: 8px; padding: 0 2px; font-size: 14px; font-weight: 600;
+            width: 100%; background: #e9e7f1; color: #252431; border: 1px solid #d8d5e3;
+            border-radius: 6px; padding: 0 2px; font-size: 14px; font-weight: 600;
             cursor: pointer; text-align: center; height: 44px;
+            box-shadow: 0 1px 2px rgba(54, 48, 92, 0.08);
             display: flex; align-items: center; justify-content: center; flex-direction: column;
             -webkit-tap-highlight-color: transparent; user-select: none; line-height: 1.1; min-width: 0;
         }
-        .kb-btn:active { opacity: 0.6; }
+        .kb-btn:active { opacity: 0.72; transform: translateY(1px); }
         .kb-btn sub, .kb-btn sup { font-size: 9px; }
         .kb-btn small { font-size: 9px; opacity: 0.65; margin-top: 1px; }
         .formula-glyph { display: inline-flex; align-items: center; line-height: 1; }
@@ -120,15 +123,16 @@
         .root-symbol { font-size: 20px; }
         .root-radicand { min-width: 15px; height: 14px; border-top: 1.5px solid white; padding: 2px 3px 0; margin-left: 1px; }
         .root-index { font-size: 10px; align-self: flex-start; margin: -3px 0 0 1px; }
-        .kb-btn.blue   { background: #1a5f8a; }
-        .kb-btn.green  { background: #1e6b45; }
-        .kb-btn.purple { background: #5b3a8a; }
-        .kb-btn.orange { background: #8a4f1a; }
-        .kb-btn.gray   { background: #48484a; }
+        .kb-btn.blue   { background: #b9dcfb; border-color: #8dc0e9; color: #18547f; }
+        .kb-btn.green  { background: #c8ecd7; border-color: #9bd3b2; color: #216b42; }
+        .kb-btn.purple { background: #dfd0f8; border-color: #c2aae9; color: #654399; }
+        .kb-btn.orange { background: #ffe0b5; border-color: #efc17d; color: #8a531a; }
+        .kb-btn.gray   { background: #e1e1e7; border-color: #cac9d3; color: #34343d; }
         .kb-btn.wide   { grid-column: span 2; }
-        .kb-btn.del    { background: #5a1a1a; font-size: 18px; }
-        .kb-btn.clr    { background: #7a1a1a; font-size: 11px; font-weight: 700; line-height: 1.2; }
-        .kb-btn.arrow  { background: #1a5f8a; font-size: 20px; font-weight: 700; }
+        .kb-btn.del    { background: #f4c4c4; border-color: #df9999; color: #9a3434; font-size: 18px; }
+        .kb-btn.clr    { background: #f7d0d0; border-color: #e5a5a5; color: #983d3d; font-size: 11px; font-weight: 700; line-height: 1.2; }
+        .kb-btn.arrow  { background: #b9dcfb; border-color: #8dc0e9; color: #18547f; font-size: 20px; font-weight: 700; }
+        .kb-btn.arrow, .kb-btn.del, .kb-btn.clr { height: 42px; }
         .function-main .kb-btn { height: 48px; font-size: 15px; }
         .function-actions .kb-btn { height: 38px; }
         .function-row .kb-btn { height: 48px; font-size: 13px; }
@@ -585,8 +589,8 @@
         const kbH  = kb.offsetHeight;
         const rect = activeMf.getBoundingClientRect();
         const safe = window.innerHeight - kbH - 16;
-        if (rect.bottom > safe) {
-            window.scrollBy({ top: rect.bottom - safe, behavior: 'smooth' });
+        if (safe <= 0 || rect.bottom > safe) {
+            activeMf.scrollIntoView({ block: 'center', behavior: 'smooth' });
         }
     }
     function showKb() {
